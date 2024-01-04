@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 21:16:26 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/04 19:00:31 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/04 19:44:57 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,15 @@ int	main()
 			continue ;
 		}
 		get_absolute_path(cmd);
-		if (!is_built_in(cmd[0]))
+		if (!ft_strcmp(cmd[0], "exit"))
+		{
+			free(buffer);
+			free_arr(cmd);
+			rl_clear_history();
+			printf("exit\n");
+			exit(0);
+		}
+		else if (!is_built_in(cmd[0]))
 		{
 			get_absolute_path(cmd);
 			exec_cmd(cmd);
