@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 23:23:58 by svydrina          #+#    #+#             */
-/*   Updated: 2023/12/02 15:36:19 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/04 18:51:03 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <limits.h>
+# include <linux/limits.h>
+# include <signal.h>
 
 void	free_arr(char **arr);
 void	get_absolute_path(char **cmd);

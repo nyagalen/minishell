@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: svydrina <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 23:06:33 by svydrina          #+#    #+#              #
-#    Updated: 2023/12/02 16:04:54 by svydrina         ###   ########.fr        #
+#    Updated: 2024/01/04 18:54:57 by svydrina         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,14 +18,16 @@ OBJS = $(SRCS:.c=.o)
 
 CC = gcc -Wall -Werror -Wextra
 
-INCLUDES = -I. -Ilibft
+INCLUDES = -I. -Ilibft -I/usr/include
 
 LIBFT = libft/libft.a
+
+RL_FLAGS = -L/usr/local/lib -I/usr/local/include -lreadline
 
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) -o $(NAME) $(OBJS) $(LIBFT)
+	$(CC) -o $(NAME) $(OBJS) $(RL_FLAGS) $(LIBFT)
 
 $(LIBFT):
 	make -C libft
