@@ -6,13 +6,13 @@
 #    By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 23:06:33 by svydrina          #+#    #+#              #
-#    Updated: 2024/01/04 18:54:57 by svydrina         ###   ########.fr        #
+#    Updated: 2024/01/05 16:39:38 by svydrina         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRCS = test_getline.c path.c error.c built_in.c
+SRCS = test_getline.c path.c error.c built_in.c env.c env_utils.c
 
 OBJS = $(SRCS:.c=.o)
 

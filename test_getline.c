@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 21:16:26 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/04 19:44:57 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/05 17:59:20 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,17 @@ static void	exec_cmd(char **cmd)
 	}
 }
 
-int	main()
+int	main(int ac, char **av, char **envp)
 {
-	char	*buffer = NULL;
+	char	*buffer;
 	char	**cmd;
+	t_env	*env;
 
+	(void)ac;
+	(void)av;
+	env = NULL;
 	buffer = readline("$>");
-
+	env = init_env(envp);
 	while (buffer)
 	{
 		if (*buffer)
@@ -68,8 +72,7 @@ int	main()
 			free_arr(cmd);
 			buffer = readline("$>");
 			continue ;
-		}
-		get_absolute_path(cmd);
+		}ma
 		if (!ft_strcmp(cmd[0], "exit"))
 		{
 			free(buffer);
@@ -78,41 +81,19 @@ int	main()
 			printf("exit\n");
 			exit(0);
 		}
-		else if (!is_built_in(cmd[0]))
+		else if (is_built_in(cmd[0]))
+			exec_builtin(cmd, env);
+		else
 		{
 			get_absolute_path(cmd);
 			exec_cmd(cmd);
 		}
-		else
-			exec_builtin(cmd);
 		free(buffer);
 		free_arr(cmd);
 		buffer = readline("$>");
 	}
-	/*
-	while (getline(&buffer, &buf_size, stdin) > 0)
-	{
-		cmd = ft_split(buffer, " \n\t");
-		if (!buffer[0] || !cmd[0])
-		{
-			free_arr(cmd);
-			write(1, "$> ", 3);
-			continue ;
-		}	
-		get_absolute_path(cmd);
-		if (cmd[0] == NULL)
-			printf("command not found cmd null\n");
-		else if (!is_built_in(cmd[0]))
-		{
-			get_absolute_path(cmd);
-			exec_cmd(cmd);
-		}
-		else
-			exec_builtin(cmd);
-		free_arr(cmd);
-		write(1, "$> ", 3);
-	}*/
 	printf("Bye : |%s|\n", buffer);
 	free(buffer);
+	free_env(&env);
 	rl_clear_history();
 }

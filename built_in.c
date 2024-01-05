@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 01:51:07 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/04 19:38:58 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/05 17:55:22 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	is_built_in(char *cmd)
 {
 	int			i;
-	const char	*built_in[] = {"echo", "cd", "pwd", \
+	const char	*built_in[] = {"echo", "cd", "pwd", "export", \
 	"unset", "env", "exit", NULL};
 
 	i = -1;
@@ -43,10 +43,12 @@ void	built_in_pwd(void)
 		perror("getcwd()");
 }
 
-void	exec_builtin(char **cmd)
+void	exec_builtin(char **cmd, t_env *env)
 {
 	if (!ft_strcmp(cmd[0], "pwd"))
 		built_in_pwd();
 	else if (!ft_strcmp(cmd[0], "cd"))
 		built_in_cd(cmd[1]);
+	else if (!ft_strcmp(cmd[0], "env"))
+		print_env(env);
 }
