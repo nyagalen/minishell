@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 01:51:07 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/05 17:55:22 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/05 18:23:19 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 int	is_built_in(char *cmd)
 {
 	int			i;
-	const char	*built_in[] = {"echo", "cd", "pwd", "export", \
-	"unset", "env", "exit", NULL};
+	const char	*built_in[] = {"cd", "pwd", "export",\
+	"unset", "env", "exit", NULL};//echo is not here anymore
 
 	i = -1;
 	while (built_in[++i])
