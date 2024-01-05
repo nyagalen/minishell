@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 21:16:26 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/05 17:59:20 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/05 18:00:21 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	main(int ac, char **av, char **envp)
 			free_arr(cmd);
 			buffer = readline("$>");
 			continue ;
-		}ma
+		}
 		if (!ft_strcmp(cmd[0], "exit"))
 		{
 			free(buffer);
