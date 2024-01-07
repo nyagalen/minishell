@@ -12,6 +12,23 @@
 
 #include "minishell.h"
 
+int	valid_env_var(char *line)
+{
+	int	i;
+	int	eq;
+
+	i = 0;
+	if (!(ft_isalpha(line[i]) || line[i] == '_'))
+		return (0);
+	eq = index_str(line, '=');
+	while (line[++i] && (eq == -1 || i < eq))
+	{
+		if (!(ft_isalnum(line[i]) || line[i] == '_'))
+			return (0);
+	}
+	return (1);
+}
+
 int	var_in_env(char *line, t_env *env)
 {
 	int		index;
@@ -52,6 +69,15 @@ void	export_mult(char **cmd, t_env **env)
 	int	i;
 
 	i = 0;
+	while (cmd[++i])
+	{
+		if (!valid_env_var(cmd[i]))
+		{
+			printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+			return ;
+		}
+	}
+	i = -1;
 	while (cmd[++i])
 		ft_export(cmd[i], env);
 }
