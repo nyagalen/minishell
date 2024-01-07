@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 23:23:58 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/07 00:59:05 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/07 17:16:59 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,8 @@ void	env_addback(t_env **env, t_env *new);
 t_env	*env_last(t_env *env);
 t_env	*env_new(char *new_l);
 void	ft_export(char *var, t_env **env);
+int		index_str(char *str, char c);
+void	replace_line_env(char *line, t_env *env);
+int		var_in_env(char *line, t_env *env);
 
 #endif

@@ -6,16 +6,58 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 23:26:30 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/07 01:29:51 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/07 17:41:09 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	var_in_env(char *line, t_env *env)
+{
+	int		index;
+	char	*env_line;
+
+	while (env)
+	{
+		env_line = env->line;
+		index = index_str(line, '=');
+		if (index == -1)
+			return (-1);
+		if (!ft_strncmp(line, env_line, index + 1))
+			return (1);
+		env = env->next;
+	}
+	return (0);
+}
+
+void	replace_line_env(char *line, t_env *env)
+{
+	int	index;
+
+	index = index_str(line, '=');
+	while (env)
+	{
+		if (!ft_strncmp(line, env->line, index + 1))
+		{
+			free (env->line);
+			env->line = ft_strdup(line);
+			break ;
+		}
+		env = env->next;
+	}
+}
+
 void	ft_export(char *var, t_env **env)
 {
 	t_env	*add_me;
 
-	add_me = env_new(var);
-	env_addback(env, add_me);
+	if (var_in_env(var, *env) == -1)
+		return ;
+	else if (var_in_env(var, *env))
+		replace_line_env(var, *env);
+	else
+	{
+		add_me = env_new(var);
+		env_addback(env, add_me);
+	}
 }

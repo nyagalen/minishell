@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 16:32:18 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/07 01:29:17 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/07 17:16:00 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,17 @@ t_env	*env_new(char *new_l)
 	new->line = ft_strdup(new_l);
 	new->next = NULL;
 	return (new);
+}
+
+int	index_str(char *str, char c)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+	{
+		if (str[i] == c)
+			return (i);
+	}
+	return (-1);
 }
