@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 21:16:26 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/05 18:25:13 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/07 01:28:58 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ static void	exec_cmd(char **cmd)
 		exit(EXIT_FAILURE);
 	}
 }
+
+// // int	truc(char ***cmds)
+// {
+// 	return();
+// }
 
 int	main(int ac, char **av, char **envp)
 {

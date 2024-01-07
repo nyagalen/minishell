@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 16:32:18 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/05 17:33:12 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/07 01:29:17 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ t_env	*env_new(char *new_l)
 	new = malloc(sizeof(t_env));
 	if (!new)
 		perror("Malloc error");
-	new->line = new_l;
+	new->line = ft_strdup(new_l);
 	new->next = NULL;
 	return (new);
 }
