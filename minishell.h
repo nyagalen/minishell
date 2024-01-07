@@ -47,5 +47,6 @@ void	ft_export(char *var, t_env **env);
 int		index_str(char *str, char c);
 void	replace_line_env(char *line, t_env *env);
 int		var_in_env(char *line, t_env *env);
+void	export_mult(char **cmd, t_env **env);
 
 #endif

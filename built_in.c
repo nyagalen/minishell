@@ -52,5 +52,5 @@ void	exec_builtin(char **cmd, t_env *env)
 	else if (!ft_strcmp(cmd[0], "env"))
 		print_env(env);
 	else if (!ft_strcmp(cmd[0], "export"))
-		ft_export(cmd[1], &env);
+		export_mult(cmd, &env);
 }

@@ -47,6 +47,15 @@ void	replace_line_env(char *line, t_env *env)
 	}
 }
 
+void	export_mult(char **cmd, t_env **env)
+{
+	int	i;
+
+	i = 0;
+	while (cmd[++i])
+		ft_export(cmd[i], env);
+}
+
 void	ft_export(char *var, t_env **env)
 {
 	t_env	*add_me;
