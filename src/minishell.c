@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 19:27:19 by cbuyurha          #+#    #+#             */
-/*   Updated: 2024/03/19 22:21:30 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/03/20 23:13:27 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ static void	init_all(t_all *all, char **envp)
 	all->info.instr.in = -2;
 	all->info.instr.out = -2;
 	all->info.instr.red_start = 0;
+	all->info.pids = NULL;
+	all->info.fds = NULL;
 	increment_shlvl(env);
 	signal(SIGINT, handle_signals);
 	signal(SIGQUIT, handle_signals);

@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 23:23:58 by svydrina          #+#    #+#             */
-/*   Updated: 2024/03/20 20:03:12 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/03/20 23:32:14 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,15 +198,18 @@ int		tab_size(char **tab);
 void	ft_close(int fd);
 void	exit_blabla(t_infos *info, int i);
 void	free_close_fds_pids(t_infos *info);
+void	reset_in_out(t_infos *info);
 
 //dans shlvl.c
 t_env	*env_by_name(char *name, t_env *env);
 int		lvl_incr(t_env *env);
 void	increment_shlvl(t_env *env);
 
+//dans no_pipe.c
+void	no_pipe(t_infos *info, t_env *env);
+
 //dans pipe.c
 void	loop(t_infos *info, t_env *env);
-void	no_pipe(t_infos *info, t_env *env);
 void	child(int **fds, int i, int n_pipe);	
 
 //dans pipe2.c
@@ -218,7 +221,6 @@ int		get_inf_outf(t_instr *instr, char **red_tab);
 //dans open_file.c
 int		open_out(char *red, int *fdout, char mode);
 int		open_in(char *red, int *fdin);
-
 
 #endif
 // dsifhids fuidgsifsdgfugs fgdsu fgsugdf fugsdd

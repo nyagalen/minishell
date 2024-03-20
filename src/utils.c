@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 17:11:44 by svydrina          #+#    #+#             */
-/*   Updated: 2024/03/13 21:37:42 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/03/20 23:29:24 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,6 @@ void	exit_blabla(t_infos *info, int i)
 	ft_putstr_fd(info->cmd[i][1], 2);
 	ft_putstr_fd(": numeric argument required\n", 2);
 	info->code = 2;
-	// if (info->n_pipe)
-	// {
-	// 	free_close_fds_pids(info);
-	// 	free_env(env);
-	// 	free_tab3(info->cmd);
-	// 	rl_clear_history();
-	//}
 }
 
 void	free_close_fds_pids(t_infos *info)
@@ -50,10 +43,22 @@ void	free_close_fds_pids(t_infos *info)
 	i = -1;
 	while (++i < info->n_pipe)
 	{
-		// ft_close(info->fds[i][0]);
-		// ft_close(info->fds[i][1]);
 		free(info->fds[i]);
+		info->fds[i] = NULL;
 	}
-	free(info->fds);
-	free(info->pids);
+	if (info->fds)
+		free(info->fds);
+	if (info->pids)
+		free(info->pids);
+	info->fds = NULL;
+	info->pids = NULL;
 }
+
+void	reset_in_out(t_infos *info)
+{
+	ft_close(info->instr.in);
+	ft_close(info->instr.out);
+	info->instr.in = -2;
+	info->instr.out = -2;
+}
+

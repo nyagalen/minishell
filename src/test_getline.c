@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 21:16:26 by svydrina          #+#    #+#             */
-/*   Updated: 2024/03/15 17:42:32 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/03/20 23:12:04 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	execpart(t_infos *infos, t_env *env, int i)
 	int		code;
 
 	code = 0;
-	printf("ici\n");
+	//printf("ici\n");
 	if (!infos->cmd || !infos->cmd[0])
 		return (0);
 	// if (infos->cmd && infos->cmd[0] && !infos->cmd[0][0])
@@ -70,12 +70,13 @@ int	execpart(t_infos *infos, t_env *env, int i)
 	// }
 	if (is_built_in(infos->cmd[i][0]))
 	{
-		infos->code = exec_builtin(infos, env, i);
+		code = exec_builtin(infos, env, i);
 		free_close_fds_pids(infos); //can insert the index here i guess i/2 I guess. it will be the index up to whichi
 		free_env(&env);
 		infos->cmd = free_tab3(infos->cmd);
 		infos->red_tab = free_tab(infos->red_tab);
 		rl_clear_history();
+		return (exitcode(code));
 	}
 	else
 	{
