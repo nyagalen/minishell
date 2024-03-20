@@ -1,37 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   pipe2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/01 18:29:49 by svydrina          #+#    #+#             */
-/*   Updated: 2023/12/02 15:37:35 by svydrina         ###   ########.fr       */
+/*   Created: 2024/03/08 23:24:24 by svydrina          #+#    #+#             */
+/*   Updated: 2024/03/09 00:14:30 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../lib/minishell.h"
 
-void	write_error(char *cmd)
+void	parent(int **fds, int i, int n_pipe)
 {
-	int	i;
-
-	i = 0;
-	while (cmd[i])
+	if (i == 0)
+		ft_close(fds[i][1]);
+	else if (i > 0 && i < n_pipe)
 	{
-		write(2, &cmd[i], 1);
-		i++;
+		ft_close(fds[i][1]);
+		ft_close(fds[i - 1][0]);
 	}
-	write(2, ": command not found\n", 20);
+	else if (i == n_pipe)
+		ft_close(fds[i - 1][0]);
 }
 
-void	write_cd_error(char *file)
-{
-	int	i;
-
-	i = -1;
-	write(2, "minishell: cd: ", 15);
-	while (file[++i])
-		write(2, &file[i], 1);
-	write(2, ": No such file or directory\n", 28);
-}

@@ -1,49 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/04 22:24:41 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/05 17:26:12 by svydrina         ###   ########.fr       */
+/*   Created: 2024/01/09 21:29:05 by svydrina          #+#    #+#             */
+/*   Updated: 2024/02/12 00:09:49 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../lib/minishell.h"
 
-t_env	*init_env(char **envp)
+void	ft_echo(char **cmd)
 {
-	int		i;
-	t_env	*env;
+	int	flag;
+	int	i;
 
-	i = -1;
-	while (envp[++i])
-		env_addback(&env, env_new(envp[i]));
-	return (env);
-}
-
-void	print_env(t_env *env)
-{
-	while (env)
+	flag = 0;
+	if (tab_size(cmd) > 1)
 	{
-		printf("%s\n", env->line);
-		env = env->next;
+		if (!ft_strcmp(cmd[1], "-n"))
+			flag = 1;
+		if (flag)
+			i = 2;
+		else
+			i = 1;
+		if (cmd[i])
+		{
+			printf("%s", cmd[i]);
+			while (cmd[++i])
+				printf(" %s", cmd[i]);
+		}
 	}
+	if (!flag)
+		printf("\n");
 }
-
-void	free_env(t_env **env)
-{
-	t_env	*temp;
-
-	if (!env)
-		return ;
-	while (*env)
-	{
-		temp = (*env)->next;
-		free((*env)->line);
-		free(*env);
-		*env = temp;
-	}
-}
-

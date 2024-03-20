@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svydrina <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 18:21:45 by svydrina          #+#    #+#             */
-/*   Updated: 2023/12/01 20:11:18 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/02/11 23:54:17 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../lib/minishell.h"
 
 static char	*cat_bin(char *path, char *cmd)
 {
@@ -30,25 +30,20 @@ static char	*cat_bin(char *path, char *cmd)
 	return (bin);
 }
 
-void	get_absolute_path(char **cmd)
+char	*get_bin(char *cmd, char *path)
 {
-	char	*path;
 	char	**path_split;
 	char	*bin;
 	int		i;
 
+	bin = NULL;
 	i = -1;
-	path = ft_strdup(getenv("PATH"));
-	if (path == NULL)
-		path = ft_strdup("/bin:/usr/local/bin:\
-				/usr/bin:/bin:/usr/local/sbin");
-	if (cmd[0] && cmd[0][0] != '/' && ft_strncmp(cmd[0], "./", 2))
+	if (path && cmd && !ft_strchr(cmd, '/'))
 	{
-		path_split = ft_split(path, ":");
-		free(path);
+		path_split = ft_split(path + 5, ":");
 		while (path_split[++i])
 		{
-			bin = cat_bin(path_split[i], cmd[0]);
+			bin = cat_bin(path_split[i], cmd);
 			if (!bin)
 				break ;
 			if (access(bin, F_OK) == 0)
@@ -57,12 +52,18 @@ void	get_absolute_path(char **cmd)
 			bin = NULL;
 		}
 		free_arr(path_split);
-		if (bin)
-		{
-			free(cmd[0]);
-			cmd[0] = bin;
-		}
 	}
-	else
-		free(path);
+	if (bin == NULL)
+		bin = ft_strdup(cmd);
+	return (bin);
+}
+
+char	*get_absolute_path(char **cmd, t_env *env)
+{
+	char	*path;
+	char	*bin;
+
+	path = value_by_name("PATH", env);
+	bin = get_bin(cmd[0], path);
+	return (bin);
 }

@@ -24,6 +24,8 @@ int	ft_atoi(const char *nptr)
 	result = 0;
 	i = 0;
 	sign = 1;
+	if (!nptr)
+		return (0);
 	while (nptr[i] && is_whitespace(nptr[i]))
 		i++;
 	if (nptr[i] && nptr[i] == '-')

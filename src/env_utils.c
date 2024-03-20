@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
+/*   By: svetlana <svetlana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 16:32:18 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/07 17:16:00 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/01/10 00:12:40 by svetlana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../lib/minishell.h"
 
 void	env_addback(t_env **env, t_env *new)
 {
@@ -64,4 +64,19 @@ int	index_str(char *str, char c)
 			return (i);
 	}
 	return (-1);
+}
+
+int	valid_env_var(char *var)
+{
+	int	i;
+
+	i = 0;
+	if (!(ft_isalpha(var[i]) || var[i] == '_'))
+		return (0);
+	while (var[++i])
+	{
+		if (!(ft_isalnum(var[i]) || var[i] == '_'))
+			return (0);
+	}
+	return (1);
 }

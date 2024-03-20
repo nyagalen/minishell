@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: svydrina <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/08 16:53:50 by svydrina          #+#    #+#              #
-#    Updated: 2023/11/29 18:13:32 by svydrina         ###   ########.fr        #
+#    Updated: 2024/02/07 20:43:23 by svydrina         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,7 @@ $(NAME): $(OBJS)
 	ranlib $(NAME)
 
 .c.o:
-	gcc $(CFLAGS) -c $< -o $@
+	cc $(CFLAGS) -c $< -o $@
 
 clean:
 	/bin/rm -f $(OBJS) $(OB_BON)
