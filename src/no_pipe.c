@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 23:30:04 by svydrina          #+#    #+#             */
-/*   Updated: 2024/03/20 23:31:30 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/03/21 01:40:47 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,7 @@ void	no_pipe(t_infos *info, t_env *env)
 			perror("pid error");
 		if (!pid)
 		{
-			if (info->instr.in > 0)
-				dup2(info->instr.in, 0);
-			if (info->instr.out > 0)
-				dup2(info->instr.out, 1);
+			ft_dup(info);
 			code = execpart(info, env, 0);
 			exit(exitcode(code));
 		}

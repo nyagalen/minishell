@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 23:23:58 by svydrina          #+#    #+#             */
-/*   Updated: 2024/03/20 23:32:14 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/03/21 01:35:45 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,14 +209,17 @@ void	increment_shlvl(t_env *env);
 void	no_pipe(t_infos *info, t_env *env);
 
 //dans pipe.c
-void	loop(t_infos *info, t_env *env);
-void	child(int **fds, int i, int n_pipe);	
+void	loop(t_infos *info, t_env *env);	
 
 //dans pipe2.c
 void	parent(int **fds, int i, int n_pipe);
+void	child(t_infos *info, int i);
 
 //dans redir.c
 int		get_inf_outf(t_instr *instr, char **red_tab);
+
+//dans redir2.c
+void	ft_dup(t_infos *info);
 
 //dans open_file.c
 int		open_out(char *red, int *fdout, char mode);

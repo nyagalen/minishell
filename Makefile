@@ -6,7 +6,7 @@
 #    By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 23:06:33 by svydrina          #+#    #+#              #
-#    Updated: 2024/03/20 23:32:24 by svydrina         ###   ########.fr        #
+#    Updated: 2024/03/21 01:36:10 by svydrina         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,8 @@ src/create_tab/cmd_conv.c src/create_tab/cmd_malloc1.c \
 src/cmd_pars/cmd_pars1.c src/cmd_pars/cmd_pars2.c src/cmd_pars/cmd_pars3.c\
 src/cmd_pars/check_buf.c src/cmd_pars/pars_errors.c src/cmd_pars/check_buf2.c\
 src/cmd_pars/cmd_red.c\
-src/error2.c src/pipe.c src/pipe2.c src/redir.c src/open_file.c src/no_pipe.c
+src/error2.c src/pipe.c src/pipe2.c src/redir.c src/open_file.c src/no_pipe.c\
+src/redir2.c
 
 OBJS = $(SRCS:.c=.o)
 
