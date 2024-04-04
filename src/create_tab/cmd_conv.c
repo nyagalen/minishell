@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../../lib/minishell.h"
 
 char	*var_value_tmp(t_env *env)
@@ -62,6 +61,5 @@ char	*var_copy(t_all *a, char *dst, char *model)
 	x = -1;
 	while (a->info.w < a->info.l_arg[a->info.nbr2 - 1] && ++x < len)
 		dst[++a->info.w] = model[x];
-	//printf("a->info.w: %d < a->info.l_arg[%d - 1]: %d, dst[a->info.w - 1]: %c, model[%d < %d]: %c, \n", a->info.w, a->info.nbr2, a->info.l_arg[a->info.nbr2 - 1], dst[a->info.w - 1], x, len, model[x]);
 	return (dst);
 }

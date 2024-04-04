@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 14:03:19 by cbuyurha          #+#    #+#             */
-/*   Updated: 2024/03/15 17:48:41 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/02 17:13:29 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,11 @@ char	**free_tab(char **tab)
 		return (NULL);
 	while (tab[++x])
 	{
-		free(tab[x]);
-		tab[x] = NULL;
+		if (tab[x])
+		{
+			free(tab[x]);
+			tab[x] = NULL;
+		}
 	}
 	free(tab);
 	tab = NULL;
@@ -77,6 +80,8 @@ int	ft_c_count(char c, char *str, int mode)
 		else if (str[x] == c && mode == 2)
 			return (x);
 	}
+	if (mode == 2)
+		return (x);
 	return (count);
 }
 
@@ -100,6 +105,10 @@ int skip_char(char *str, char skip, int m)
 	while (m == 1 && str[x] && str[x] != skip)
 		++x;
 	while (m == 2 && str[x] && (str[x] == skip || ft_isalnum(str[x]) == 1))
+		++x;
+	while (m == 3 && str[x] && (str[x] != skip && str[x] != 39))
+		++x;
+	while (m == 4 && str[x] && (str[x] != skip && str[x] != 34))
 		++x;
 	return (x);
 }

@@ -7,19 +7,22 @@ int	tab_assign1(t_all *a, char **tab, int bx, int len)
 	x = -1;
 	while (++x < len - 1 && a->info.tmp[bx + x])
 	{
-		if (a->info.tmp[bx + x][0] == '<') // '>'
-		{
-			printf("alternative redirection a gerer\n");
-			//tab[x] = ft_strdup(a->info.redirectiontab);
-		}
-		//else
 		tab[x] = ft_strdup(a->info.tmp[bx + x]);
 		if (tab[x] == NULL)
 			printf("malloc erreur a gerer\n");
 	}
-	printf("len: %d, x: %d\n", len, x);
+	//printf("len: %d, x: %d\n", len, x);
 	tab[x] = NULL;
 	return (bx + len - 1);
+}
+
+char	***assign_null(char ***tcmd)
+{
+	tcmd = malloc(sizeof(char **) * 2);
+	tcmd[0] = malloc(sizeof(char *) * 1);
+	tcmd[0][0] = NULL;
+	tcmd[1] = NULL;
+	return (tcmd);
 }
 
 char	***tab_assign(t_all *a)
@@ -30,6 +33,9 @@ char	***tab_assign(t_all *a)
 
 	ntab = -1;
 	x = 0;
+	printf("pipe nbr: %d; a->info.tab_nbr: %d\n", a->info.n_pipe, a->info.tab_nbr);
+	if (a->info.tab_nbr == -1)
+		return (assign_null(NULL));
 	tcmd = malloc(sizeof(char **) * (a->info.tab_nbr + 2));
 	if (!tcmd)
 		return (NULL);

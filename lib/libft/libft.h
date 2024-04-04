@@ -3,15 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svydrina <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 19:08:07 by svydrina          #+#    #+#             */
-/*   Updated: 2023/12/02 15:18:04 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/03/28 19:28:27 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
 
 # include <stddef.h>
 # include <unistd.h>
@@ -67,5 +71,6 @@ char	*ft_strrchr(const char *s, int c);
 int		ft_tolower(int c);
 int		ft_toupper(int c);
 int		ft_strcmp(const char *s1, const char *s2);
+char	*get_next_line(int fd);
 
 #endif

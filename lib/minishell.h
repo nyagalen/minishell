@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 23:23:58 by svydrina          #+#    #+#             */
-/*   Updated: 2024/03/21 01:35:45 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:09:56 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ typedef struct s_instr
 	int		out;
 	int		status;
 	int		red_start;
+	int		cmd_i;
+	int		hd_i;
+	int		line;
 }	t_instr;
 
 typedef struct s_infos
@@ -52,6 +55,7 @@ typedef struct s_infos
 	char	***tcmd;
 	char	**tmp;
 	char	**red_tab;
+	char	*new_r; //ajouter une nouvelle redirection
 	char	*buf;
 	int		*l_arg;//liste de la taille de chaque argument
 	int		*l_tab;
@@ -59,15 +63,18 @@ typedef struct s_infos
 	int		arg_nbr;
 	int		tab_nbr;
 	int		red_n; //nbr redirections
+	int		red_l;
 	int		n_pipe; //faire un char ** separer pour les pipes qui seront vide ?
 	int		nbr2;
 	int		w; //alternative a une variable qui doit etre reutilisee
 	int		error; //signaler l'arret de cmd_tab car erreur detecté (1 = erreur)
 	int		p_check; //si oui ou non il y a eu un argument depuis le debut de la pipe
+	int		q;//si oui on non il faut entourer le nom de '
 	int		***type;
 	int		code;
 	int		**fds;
 	int		*pids;
+	char	**hd_files;
 	t_instr	instr;
 }	t_infos;
 
@@ -110,6 +117,34 @@ int		skip_arg3(t_all *a, int x, int *nbr);
 int		add_dollars2(t_all *a, int save);
 int		new_argument(t_all *a, int x, int save, int *nbr);
 
+//cmd_red.c
+int		red_init(t_all *a, t_infos *i, int x, int n);
+int		red_len(t_all *a, char *buf);
+int		skip_red_to_34(t_all *a, char *buf, int x, int len);
+int		skip_quotes(t_all *a, char *buf, int x);
+int		is_pipe(t_all *a, char **s);
+
+//red_dollars.c
+int		red_add_dollars(t_all *a, int x, int y, int m);
+int		red_var_copy(char *dst, char *model, int l);
+int		red_special_dollars(t_all *a, int x, int y, int mode);
+int		red_skip_dollars(t_all *a, char *buf, int x, int m);
+int		red_skip_dollars2(t_all *a, char *buf, int x, int m);
+//utils/red_utils.c
+int		red_var_copy(char *dst, char *model, int l);
+int		is_pipe(t_all *a, char **s);
+int		is_red(char *s);
+
+//add_remove_red.c
+int		is_red(char *s);
+//int		add_red_to_34(t_all *a, int x, int y, int save);
+int		add_red_to_34(t_all *a, int x, int save);
+
+char	*add_red2(t_all *a, int x);
+int		remove_red(t_infos *i, int x, int save);
+int		add_red(t_all *a, int x, int n);
+
+
 //utils/cmd_utils.c
 char	***free_tab3(char ***cmd);
 char	**free_tab(char **tab);
@@ -117,7 +152,7 @@ char	**free_tab(char **tab);
 int		print_tab(char **tab);
 void	print_tabx2(char ***tab, int x);
 int		print_intx2(int *tab);
-int skip_char(char *str, char skip, int m);
+int 	skip_char(char *str, char skip, int m);
 
 
 //partie S*****************************************************
@@ -136,7 +171,7 @@ int		exec_cmd(t_infos *infos, char *exec, t_env *env, int i);
 char	*get_absolute_path(char **cmd, t_env *env);
 char	*get_bin(char *cmd, char *path);
 
-//dans error.c
+//dans error.	reset_in_out(&all.info);c
 int		write_error(char *cmd);
 int		write_cd_error(char *file);
 int		write_pipe_error(void);
@@ -147,7 +182,7 @@ int		no_such_file_error(char *filename);
 int		is_a_dir_err(char *exec);
 int		perm_denied(char *exec);
 
-//dans built_in.c
+//dans built_in.	reset_in_out(&all.info);c
 int		is_built_in(char *cmd);
 int		built_in_cd(char *path);
 int		built_in_pwd(void);
@@ -196,7 +231,6 @@ void	ft_echo(char **cmd);
 //dans utils.c
 int		tab_size(char **tab);
 void	ft_close(int fd);
-void	exit_blabla(t_infos *info, int i);
 void	free_close_fds_pids(t_infos *info);
 void	reset_in_out(t_infos *info);
 
@@ -206,24 +240,57 @@ int		lvl_incr(t_env *env);
 void	increment_shlvl(t_env *env);
 
 //dans no_pipe.c
-void	no_pipe(t_infos *info, t_env *env);
+void	no_pipe(t_all *all, t_env *env);
 
 //dans pipe.c
-void	loop(t_infos *info, t_env *env);	
+void	if_signaled_pipes(int code);
+void	pipe_wait(t_infos *info, int forks, int letswait);
+void	malloc_pids_fds(t_infos *info);
+int		file_success(t_all *all, int i, int forks);
 
 //dans pipe2.c
 void	parent(int **fds, int i, int n_pipe);
 void	child(t_infos *info, int i);
 
 //dans redir.c
-int		get_inf_outf(t_instr *instr, char **red_tab);
+int		open_file(t_all *all, char *red, int *fdin, int *fdout);
+int		is_heredoc(char *red);
+
+//dans pipe_loop.c
+void	handle_redirections(t_all *all, int i, int *forks, int *letswait);
+void	interrupted_heredoc(t_infos *info);
+void	end_loop(t_infos *info, int forks, int letswait);
 
 //dans redir2.c
 void	ft_dup(t_infos *info);
+int		assign_inout_handle_err(t_all *all);
+int		handle_err_set_index(t_all *all, int *fdin, int *fdout, int i);
 
 //dans open_file.c
 int		open_out(char *red, int *fdout, char mode);
 int		open_in(char *red, int *fdin);
+int		get_inf_outf(t_all *all);
+
+//dans utils2.c
+void	free_resources_child(t_infos *info, t_env *env);
+
+//dans heredoc.c
+int		heredoc(t_all *all, char *red, int *fdin);
+void	handle_signals(int sig);
+void	sig_heredoc(int sig);
+int		is_delim(char *input, char *eof);
+
+//dans pipe_loop_eigentlich.c
+void	loop(t_all *all);
+
+//dans heredoc_pipes.c
+int		hd_pipe_parent(t_all *all, int hd_i, char *eof);
+int		open_heredoc_pipes(t_all *all, int *fdin);
+void	end_heredoc(char *input, int line, char *eof);
+
+//dans exit_refact.c
+int		exit_error(t_infos *infos, int i);
+void	exit_blabla(t_infos *info, int i);
 
 #endif
 // dsifhids fuidgsifsdgfugs fgdsu fgsugdf fugsdd
@@ -235,4 +302,81 @@ variable error transcription:
 4 = || error
 5 = fds | error
 
+
+liste de test:
+|>$|
+|>'$'|
+|>"$"|
+|>$''|
+|>$""|
+|>$USER|
+|>'$USER'|
+|>"$USER"|
+|>$"USER"|
+|>$'USER'|
+|>$f|
+|>"$f"|
+|>'$f'|
+|>$'f'|
+|>$"f"|
+|>$' '|
+|>$" "|
+|>$|
+>$USER$USER
+>$USER'$USER'
+>$USER$U'SER'
+>$USER'USER'
+>$USER'$iUSER'
+>$USER"$iUSER"
+>"$DISPLAY$iUSER"
+>"$DISPLAY"'$iUSER'
+>"fsdds$USER"
+>"$USER dsf"
+>"$USER$USER"
+>"$USER'USER'"
+>"$USER""g"
+>"$USER"'g'
+
+s >dsf|">dfe" l
+">fds" > l | ">fd"
+
+regles:
+1 -> si il y a un espace entre quotes ('' || "")
+le nom du fichier est entour2 de '.
+2 -> si il y a un $ entre quotes ('' || "") 
+et qu'il est suivis de chara non alphanumerique 
+a l'exception de _ le nom du fichier est entour2 de '
+et le $ apparait
+3 -> si il y a un $ entre quotes ("")
+et qu'il est suivis de chara alphanumerique 
+ou de _ ne correspondant a aucune variable
+alors ces derniers plus le $ sont supprimes
+(ex: >"$dsaf" - > || ; >"$fds f" -> |' f'| ;
+>"$fdsa"fad -> |fad| ; >"d$fdsa" - > |d|)
+4 -> si la chaine ne contient qu'un $
+suivis d'un \0 alors le nom du fichier est entre '
+(ex: >$ -> |'$'| ; >f$ -> |'f$'| ; >''$ -> |'$'|)
+5 -> si un dollar est contenu entre des ',
+il ne sera jamais converti
+(ex: >'$USER' -> |'$USER'|)
+
+
+*/
+
+/*cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ >' '$
+cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ ls
+' $'  '$'
+cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ rm '$'
+cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ > "$'fds'"
+cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ ls
+' $'  '$'\''fds'\'''
+cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ > "'fds'"
+cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ ls
+' $'  '$'\''fds'\'''  "'fds'"
+cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ > "$"fds""
+cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ ls
+' $'  '$'\''fds'\'''  '$fds'  "'fds'"
+cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ > '$"fds"'
+cbuyurha@paul-f4Ar6s4:~/Desktop/intra/minishell/test$ ls
+' $'  '$"fds"'	'$'\''fds'\'''	'$fds'	"'fds'"
 */

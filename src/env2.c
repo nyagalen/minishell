@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 23:26:30 by svydrina          #+#    #+#             */
-/*   Updated: 2024/02/23 04:16:14 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/03/21 18:48:10 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	export_mult(char **cmd, t_env **env)
 			return (1);
 		}
 	}
-	i = -1;
+	i = 0;
 	while (cmd[++i])
 		ft_export(cmd[i], env);
 	return (0);

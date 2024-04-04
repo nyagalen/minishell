@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 01:29:46 by svydrina          #+#    #+#             */
-/*   Updated: 2024/03/15 17:16:37 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:53:15 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,25 +21,16 @@ int	exitcode(int code)
 
 int	ft_exit(t_infos *infos, t_env **env, int i)
 {	
+	int	error;
+
 	if (g_sig)
 		infos->code = g_sig;
 	if (infos->n_pipe == 0)
 		printf("exit\n");
-	if (infos->cmd && infos->cmd[i]
-		&& check_ex_args(infos, infos->cmd[i]) == -1)
-	{
-		write(2, "minishell: exit: too many arguments\n", 36);
-		if (!infos->code)
-			infos->code = 1;
-		return (infos->code);
-	}
-	if (infos->cmd && infos->cmd[i] && !check_ex_args(infos, infos->cmd[i]))
-	{
-		exit_blabla(infos, i);
-		if (infos->n_pipe)
-			return (infos->code);
-	}
-	else if (infos->cmd && infos->cmd[i])
+	error = exit_error(infos, i);
+	if (error && error != 2)
+		return (error);
+	else if (error != 2 && infos->cmd && infos->cmd[i])
 		infos->code = atoi_exitcode(infos, infos->cmd[i][1]);
 	if (!infos->n_pipe)
 	{	

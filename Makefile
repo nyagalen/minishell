@@ -6,7 +6,7 @@
 #    By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 23:06:33 by svydrina          #+#    #+#              #
-#    Updated: 2024/03/21 01:36:10 by svydrina         ###   ########.fr        #
+#    Updated: 2024/04/03 18:38:11 by svydrina         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,9 +20,12 @@ src/utils/cmd_utils.c src/utils/print_utils.c src/utils/dollars_utils.c \
 src/create_tab/cmd_conv.c src/create_tab/cmd_malloc1.c \
 src/cmd_pars/cmd_pars1.c src/cmd_pars/cmd_pars2.c src/cmd_pars/cmd_pars3.c\
 src/cmd_pars/check_buf.c src/cmd_pars/pars_errors.c src/cmd_pars/check_buf2.c\
-src/cmd_pars/cmd_red.c\
+src/utils/red_utils.c src/red_pars/red_dollars.c\
+src/red_pars/add_remove_red.c src/red_pars/cmd_red.c\
 src/error2.c src/pipe.c src/pipe2.c src/redir.c src/open_file.c src/no_pipe.c\
-src/redir2.c
+src/redir2.c src/utils2.c src/heredoc.c src/pipe_loop.c\
+src/pipe_loop_eigentlich.c src/heredoc_pipes.c src/exit_refact.c
+
 
 OBJS = $(SRCS:.c=.o)
 

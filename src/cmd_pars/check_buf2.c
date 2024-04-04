@@ -15,6 +15,34 @@
 int	pars_error(int error);
 int	two_pipe_err(t_infos *i, int x, int mode);
 
+int cutting_buf(t_infos *i, int save)
+{
+	++save;
+	if (!i->buf[++save]) //ls ||
+		return (save);
+	if (i->buf[save] == '|' && i->buf[save + 1] == '|')
+		return (i->error = 4, -2);
+	else if (i->buf[save] == '|')
+		return (i->error = 3, -2);
+	save = skip_space(i->buf, save, 1);
+	if (two_pipe_err(i, save, 2) == -2)
+		return (-2);
+	while (save < i->b_len && i->buf[save])
+	{
+		save = skip_space(i->buf, save, 1);
+		if (i->buf[save] && i->buf[save] == '|')
+		{
+			if (two_pipe_err(i, ++save, 2) == -2)
+				return (-2);
+			save = skip_space(i->buf, save, 1);
+			if (two_pipe_err(i, save, 2) == -2)
+				return (-2);
+		}
+		save++;
+	}
+	return (save);
+}
+
 int	check_pipes(t_infos *i, int save)
 {
 	int	y;
@@ -25,6 +53,9 @@ int	check_pipes(t_infos *i, int save)
 		return (i->error = 5, save);
 	if (i->buf[save + 1] == '|')
 	{
+		printf("cutting buf\n");
+		if (cutting_buf(i, save) == -2)
+			return (save);
 		i->buf[save] = ' ';
 		ft_memset(&i->buf[save + 1], 0, i->b_len - save);
 		i->b_len = save + 1;
@@ -111,7 +142,7 @@ int	check_middle(t_infos *i, int save)
 			return (check_red(i, y));
 		else
 			y++;
-		printf("y: %d\n", y);
+//		printf("y: %d\n", y);
 	}
 	printf("	i->arg_nbr: %d, i->tab_nbr: %d, y: %d\n", i->arg_nbr, i->tab_nbr, y);
 	return (y);

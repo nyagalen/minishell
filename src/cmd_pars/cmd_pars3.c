@@ -19,7 +19,11 @@ int	skip_arg3bis(t_all *a, char *buf, int x, int *nbr)
 	while (x < a->info.b_len && buf[x] != ' ' && buf[x] != '	')
 	{
 		if (buf[x] == '$')
+		{
+			printf("000:		&buf[x: %d]: |%s|\n", x, &buf[x]);
 			x = x + skip_dollars2(a, x, 2);
+			printf("111:		&buf[x: %d]: |%s|\n", x, &buf[x]);
+		}
 		if (buf[x] == 34)
 			x = count_dollars(a, ++x, nbr, 2);
 		if (buf[x] == 39 && ++x <= a->info.b_len)

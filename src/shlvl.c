@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 20:07:24 by svydrina          #+#    #+#             */
-/*   Updated: 2024/02/23 04:28:25 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:12:37 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	lvl_incr(t_env *env)
 	lvl_i = 0;
 	if (env == NULL)
 		return (0);
-	if (line_in_env("SHLVL", env))
+	if (line_in_env("SHLVL=", env))
 	{
 		shlvl = env_by_name("SHLVL", env);
 		lvl_s = shlvl->line;

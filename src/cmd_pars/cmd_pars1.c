@@ -11,10 +11,9 @@
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
-
+/*
 int	cmd_check_pipe2(t_infos *i, int x, int check)
 {
-	printf("check");
 	while (i->buf[++i->w])
 	{
 		if (i->buf[i->w] == '|')
@@ -61,11 +60,11 @@ int	cmd_check_pipe2(t_infos *i, int x, int check)
 		return (-2);
 	}
 	return (0);
-}/*to rm*/
+}
 
 int	cmd_check_pipe1(t_infos *i, int x)
 {
-	printf("	i->n_pipe: %d\n", i->n_pipe);
+//	printf("	i->n_pipe: %d\n", i->n_pipe);
 	i->w = x;
 	if (i->n_pipe <= 1 && i->arg_nbr <= 1)
 	{
@@ -91,13 +90,15 @@ int	cmd_check_pipe1(t_infos *i, int x)
 	else if (i->n_pipe <= 1 && cmd_check_pipe2(i, x, 1) == -2)
 		return (x);
 	return (++x);
-} /*fdsf dfssd |||"|dsf" dsf dsfdsf*/
+}*/ /*fdsf dfssd |||"|dsf" dsf dsfdsf*/
 
 
 int	skip_arg1bis(t_infos *i, int x)
 {
+	/*if (i->buf[x] == '|')
+		return (cmd_check_pipe1(i, x));*/
 	if (i->buf[x] == '|')
-		return (cmd_check_pipe1(i, x));
+		return (++x);
 	while (x < i->b_len && i->buf[x] != '	' && i->buf[x] != ' ')
 	{
 		if (i->buf[x] == 34 && ++x <= i->b_len)
@@ -115,12 +116,14 @@ int	skip_arg1bis(t_infos *i, int x)
 
 int	skip_arg1(t_infos *i, int x)
 {
-	//printf("	1 i->p_check: %d (x: %d/b_len: %d)\n", i->p_check, x, i->b_len);
+	//printf("	1 i->p_check: %d (x: %d/b_len: %d), tab_nbr: %d\n", i->p_check, x, i->b_len, i->tab_nbr);
 	if (x < i->b_len && (x == 0 || i->buf[x] == '|' || i->buf[x - 1] == '|'))
 	{
-		if (i->p_check == 0 && i->buf[x] == '|')
+		if (i->buf[x] == '|')
 			++i->n_pipe;
-		if (x != 0 && i->buf[x] == '|')
+		if ((i->p_check >= 1 || i->arg_nbr <= 0) && i->buf[x] == '|')
+			i->tab_nbr++;
+		if (i->buf[x] == '|')
 			i->p_check = 1;
 		else if (x != 0)
 			i->p_check = 0;
@@ -134,7 +137,7 @@ int	skip_arg1(t_infos *i, int x)
 		i->p_check = 0;
 		++i->arg_nbr;
 	}
-	//printf("	2 i->p_check: %d -> tqb_nbr: %d\n", i->p_check, i->tab_nbr);
+//	printf("	2 i->p_check: %d -> tqb_nbr: %d\n", i->p_check, i->tab_nbr);
 	x = skip_arg1bis(i, x);
 	return (x);
 }

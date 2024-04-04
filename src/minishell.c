@@ -6,31 +6,13 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 19:27:19 by cbuyurha          #+#    #+#             */
-/*   Updated: 2024/03/20 23:13:27 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/03 20:10:43 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../lib/minishell.h"
 
 int	g_sig = 0;
-
-void	handle_signals(int sig)
-{
-	if (sig == SIGINT)
-	{
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-		g_sig = 130;
-	}
-	else if (sig == SIGQUIT)
-	{
-		rl_on_new_line();
-		rl_redisplay();
-		printf("  \b\b");
-	}
-}
 
 static void	init_all(t_all *all, char **envp)
 {
@@ -45,8 +27,13 @@ static void	init_all(t_all *all, char **envp)
 	all->info.instr.in = -2;
 	all->info.instr.out = -2;
 	all->info.instr.red_start = 0;
+	all->info.instr.status = 0;
+	all->info.instr.cmd_i = 0;
+	all->info.instr.hd_i = 0;
+	all->info.instr.line = 1;
 	all->info.pids = NULL;
 	all->info.fds = NULL;
+	all->info.hd_files = NULL;
 	increment_shlvl(env);
 	signal(SIGINT, handle_signals);
 	signal(SIGQUIT, handle_signals);
@@ -59,6 +46,17 @@ void	update_sig(int *code)
 	g_sig = 0;
 }
 
+void	exec(t_all *all)
+{
+	if ((all->info.cmd && all->info.cmd[0]) || all->info.red_tab)
+	{
+		if (!all->info.n_pipe)
+			no_pipe(all, all->env);
+		else
+			loop(all);
+	}
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	char	*buffer;
@@ -67,7 +65,7 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 	init_all(&all, envp);
-	buffer = readline("$>");
+	buffer = readline("$> ");
 	while (buffer)
 	{
 		update_sig(&all.info.code);
@@ -75,13 +73,7 @@ int	main(int ac, char **av, char **envp)
 			add_history(buffer);
 		all.info.cmd = cmd_tab(&all, buffer);
 		free(buffer);
-		if (all.info.cmd && all.info.cmd[0])
-		{
-			if (!all.info.n_pipe)
-				no_pipe(&all.info, all.env);
-			else
-				loop(&(all.info), all.env);
-		}
+		exec(&all);
 		buffer = new_entry(&all.info);
 	}
 	ft_exit(&(all.info), &all.env, 0);
