@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 01:29:46 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/03 19:53:15 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:09:28 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ int	ft_exit(t_infos *infos, t_env **env, int i)
 		rl_clear_history();
 	}
 	infos->code = exitcode(infos->code);
-	exit(exitcode(infos->code));
+	if (!infos->n_pipe)
+		exit(exitcode(infos->code));
+	return (infos->code);
 }
 
 int	check_ex_args(t_infos *infos, char **ex_cmd)

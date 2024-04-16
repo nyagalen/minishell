@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 20:52:03 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/04 19:54:59 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/06 04:23:07 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,37 @@ static void	no_success(t_infos *info, int i, int success)
 		info->code = 1;
 }
 
-static void	success_action(t_all *all, int i, int *forks, int *letswait)
+static int	success_action(t_all *all, int i, int *forks, int *letswait)
 {
 	all->info.code = file_success(all, i, *forks);
+	if (all->info.code == -1)
+		return (all->info.code);
+	if (all->info.code == 42)
+	{
+		erreur('m');
+		return (42);
+	}
 	*forks += 1;
 	if (i == all->info.n_pipe * 2)
 		*letswait = 1;
+	return (0);
 }
 
-void	handle_redirections(t_all *all, int i, int *forks, int *letswait)
+int	handle_redirections(t_all *all, int i, int *forks, int *letswait)
 {
 	int	success;
+	int	success_act;
 
 	success = assign_inout_handle_err(all);
 	if (success && all->info.cmd[i][0])
-		success_action(all, i, forks, letswait);
+	{
+		success_act = success_action(all, i, forks, letswait);
+		if (success_act == -1 || success_act == 42)
+			return (0);
+	}
 	else if (success && !all->info.cmd[i][0])
-		return ;
+		return (1);
 	else
 		no_success(&all->info, i, success);
+	return (1);
 }

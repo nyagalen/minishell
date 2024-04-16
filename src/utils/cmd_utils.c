@@ -44,21 +44,7 @@ char	***free_tab3(char ***cmd)
 	if (!cmd)
 		return (NULL);
 	while (cmd[++index])
-	{
-		while (cmd[index][++x])
-		{
-			free(cmd[index][x]);
-			cmd[index][x] = NULL;
-		}
-		if (cmd[index][x] == NULL)
-		{
-			free(cmd[index][x]);
-			cmd[index][x] = NULL;
-		}
-		free(cmd[index]);
-		cmd[index] = NULL;
-		x = -1;
-	}
+		cmd[index] = free_tab(cmd[index]);
 	if (cmd[index])
 		free(cmd[index]);
 	free(cmd);
@@ -66,51 +52,22 @@ char	***free_tab3(char ***cmd)
 	return (NULL);
 }
 
-int	ft_c_count(char c, char *str, int mode)
-{
-	int	x;
-	int	count;
-
-	count = 0;
-	x = -1;
-	while (str && str[++x])
-	{
-		if (str[x] == c && mode == 1)
-			++count;
-		else if (str[x] == c && mode == 2)
-			return (x);
-	}
-	if (mode == 2)
-		return (x);
-	return (count);
-}
-
-int	skip_space(char *str, int x, int m)
-{
-	while (m == 1 && str && str[x] && (str[x] == ' ' || str[x] == '	'))
-		++x;
-	while (m == 2 && str && str[x] && str[x] != ' ' && str[x] != '	')
-		++x;
-	return (x);
-}
-/*skip les espace en mode 1, skip ce qu'il y a entre les espace en mode 2*/
-
-int skip_char(char *str, char skip, int m)
-{
-	int	x;
-
-	x = 0;
-	if (!str)
-		return (0);
-	while (m == 1 && str[x] && str[x] != skip)
-		++x;
-	while (m == 2 && str[x] && (str[x] == skip || ft_isalnum(str[x]) == 1))
-		++x;
-	while (m == 3 && str[x] && (str[x] != skip && str[x] != 39))
-		++x;
-	while (m == 4 && str[x] && (str[x] != skip && str[x] != 34))
-		++x;
-	return (x);
-}
-
 /* fsdf fezsfsd fds |sdf*/
+int	pars_error_free(t_infos *i, int m)
+{
+	if (i->buf)
+		free(i->buf);
+	if (i->red_tab)
+		i->red_tab = free_tab(i->red_tab);
+	if (m == 0)
+		return (-2);
+	if (i->tmp)
+		i->tmp = free_tab(i->tmp);
+	if (i->l_arg)
+		free(i->l_arg);
+	if (i->l_tab)
+		free(i->l_tab);
+	if (m == 1)
+		return (-2);
+	return (-2);
+}

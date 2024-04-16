@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 02:29:02 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/03 19:52:00 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/06 04:33:03 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,21 @@ static void	count_hds(t_infos *info)
 	}
 }
 
-static void	name_hd_files(t_all *all, int hds)
+static int	name_hd_files(t_all *all, int hds)
 {
 	char	*hd_num;
 
 	hd_num = ft_itoa(hds);
+	if (!hd_num)
+		return (0);
 	all->info.hd_files[hds] = ft_strjoin(".hd", hd_num);
+	if (!all->info.hd_files[hds])
+	{
+		free(hd_num);
+		return (0);
+	}
 	free(hd_num);
+	return (1);
 }
 
 static int	open_heredocs(t_all *all)
@@ -56,7 +64,8 @@ static int	open_heredocs(t_all *all)
 			i++;
 			continue ;
 		}
-		name_hd_files(all, hds);
+		if (!name_hd_files(all, hds))
+			return (perror("malloc error"), -1);
 		status = hd_pipe_parent(all, hds, all->info.red_tab[i] + 2);
 		if (status)
 			return (status);
@@ -74,8 +83,11 @@ static int	malloc_handle_hds(t_all *all)
 
 	if (all->info.red_tab)
 		count_hds(&all->info);
-	malloc_pids_fds(&all->info);
+	if (malloc_pids_fds(&all->info))
+		return (-1);
 	heredoc_success = open_heredocs(all);
+	if (heredoc_success == -1)
+		return (-1);
 	if (heredoc_success)
 	{
 		interrupted_heredoc(&all->info);
@@ -101,7 +113,8 @@ void	loop(t_all *all)
 	{
 		if (i / 2 < all->info.n_pipe)
 			pipe(all->info.fds[i / 2]);
-		handle_redirections(all, i, &forks, &letswait);
+		if (!handle_redirections(all, i, &forks, &letswait))
+			return ;
 		parent(all->info.fds, i / 2, all->info.n_pipe);
 		reset_in_out(&all->info);
 		all->info.instr.cmd_i++;

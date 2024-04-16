@@ -12,24 +12,27 @@
 
 #include "../../lib/minishell.h"
 
-int	skip_arg2bis(t_all *a, int x, int *nbr)
+int	skip_arg2bis(t_all *a, t_infos *i, int x)
 {
-	if (a->info.buf[x] == '|' && ++a->info.l_arg[nbr[0] - 1] >= 0)
+	char	*b;
+
+	b = i->buf;
+	if (b[x] == '|' && ++i->l_arg[i->na - 1] >= 0)
 		return (++x);
-	while (x < a->info.b_len && a->info.buf[x] != ' ' && a->info.buf[x] != '	')
+	while (x < i->b_len && b[x] != ' ' && b[x] != '	')
 	{
-		if (a->info.buf[x] != 34 && a->info.buf[x] != 39 && a->info.buf[x] != '|')
-			++a->info.l_arg[nbr[0] - 1];
-		if (a->info.buf[x] == '$')
-			x = x + skip_dollars(a, x, nbr);
-		if (a->info.buf[x] == 34)
-			x = count_dollars(a, ++x, nbr, 1);
-		if (a->info.buf[x] == 39 && ++x < a->info.b_len)
+		if (b[x] != 34 && b[x] != 39 && b[x] != '|')
+			++i->l_arg[i->na - 1];
+		if (b[x] == '$')
+			x = x + skip_dollars(a, i, x);
+		if (x < i->b_len && b[x] == 34)
+			x = count_dollars(a, ++x, 1);
+		if (x < i->b_len && b[x] == 39 && ++x < i->b_len)
 		{
-			while (a->info.buf[x] != 39 && ++x < a->info.b_len)
-				++a->info.l_arg[nbr[0] - 1];
+			while (b[x] != 39 && ++x < i->b_len)
+				++i->l_arg[i->na - 1];
 		}
-		if (a->info.buf[x] == '|')
+		if (x < i->b_len && b[x] == '|')
 			return (x);
 		++x;
 	}
@@ -37,7 +40,7 @@ int	skip_arg2bis(t_all *a, int x, int *nbr)
 }
 /*pointe a l'endroit ou l'argument en cours(nbr) se termine
 calcul la taille de cet argument 
-et la met dans a->info.l_arg[nbr[0] - 1]
+et la met dans i->l_arg[nbr[0] - 1]
 gere le cas des "" et ''
 gere le cas d'un |
 gere le cas des $
@@ -45,34 +48,33 @@ gere le cas des '$' (39)
 gere le cas des "$" (34)*/
 /*charactere speciaux : /-'* + #~@^*/
 
-int	skip_arg2(t_all *a, int x, int *nbr)
+int	skip_arg2(t_all *a, t_infos *i, int x)
 {
-//	printf("			1 a->info.p_check: %d -> tqb_nbr: %d\n", a->info.p_check, a->info.tab_nbr);
-	if (x >= a->info.b_len)
+	char	*b;
+
+	b = i->buf;
+	if (x >= i->b_len)
 		return (x);
-	if ((x == 0 || a->info.tab_nbr == -1) && a->info.buf[x] != '|')
-		a->info.l_tab[++a->info.tab_nbr] = 2;
-	else if (a->info.buf[x] == '|')
+	if ((x == 0 || i->tab_nbr == -1) && b[x] != '|')
+		i->l_tab[++i->tab_nbr] = 2;
+	else if (b[x] == '|')
 	{
-		if (++a->info.p_check >= 2 || (x == 0 || a->info.tab_nbr == -1))
-			a->info.l_tab[++a->info.tab_nbr] = 1;
-		/*if (a->info.p_check++ >= 2)
-			a->info.p_check = 0;*/
-		a->info.l_tab[++a->info.tab_nbr] = 2;
+		if (++i->p_check >= 2 || (x == 0 || i->tab_nbr == -1))
+			i->l_tab[++i->tab_nbr] = 1;
+		i->l_tab[++i->tab_nbr] = 2;
 	}
-	else if (a->info.buf[x - 1] == ' ' || a->info.buf[x - 1] == '	')
+	else if (b[x - 1] == ' ' || b[x - 1] == '	' || b[x - 1] == '|')
 	{
-		if (a->info.p_check >= 1)
-			a->info.l_tab[++a->info.tab_nbr] = 1;
-		a->info.p_check = 0;
-		a->info.l_tab[a->info.tab_nbr]++;
+		if (i->p_check >= 1)
+			i->l_tab[++i->tab_nbr] = 1;
+		i->p_check = 0;
+		i->l_tab[i->tab_nbr]++;
 	}
 	else
-		return (skip_arg2bis(a, x, nbr));
-	nbr[0] = nbr[0] + 1;
-	a->info.l_arg[nbr[0] - 1] = 1;
-//	printf("			2 a->info.p_check: %d -> l_tab[tqb_nbr:%d] %d\n", a->info.p_check, a->info.tab_nbr, a->info.l_tab[a->info.tab_nbr]);
-	return (skip_arg2bis(a, x, nbr));
+		return (skip_arg2bis(a, i, x));
+	i->na = i->na + 1;
+	i->l_arg[i->na - 1] = 1;
+	return (skip_arg2bis(a, i, x));
 }
 
 /*gerer ici la présence de | seules*/

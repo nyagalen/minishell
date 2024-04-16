@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 23:26:30 by svydrina          #+#    #+#             */
-/*   Updated: 2024/03/21 18:48:10 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/14 22:18:03 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	line_in_env(char *line, t_env *env)
 		env_line = env->line;
 		index = index_str(line, '=');
 		if (index == -1)
-			return (0);
+			return (-1);
 		if (!ft_strncmp(line, env_line, index + 1))
 			return (1);
 		env = env->next;
@@ -47,7 +47,7 @@ int	line_in_env(char *line, t_env *env)
 	return (0);
 }
 
-void	replace_line_env(char *line, t_env *env)
+int	replace_line_env(char *line, t_env *env)
 {
 	int	index;
 
@@ -58,13 +58,16 @@ void	replace_line_env(char *line, t_env *env)
 		{
 			free (env->line);
 			env->line = ft_strdup(line);
+			if (!env->line)
+				return (0);
 			break ;
 		}
 		env = env->next;
 	}
+	return (1);
 }
 
-int	export_mult(char **cmd, t_env **env)
+int	export_mult(char **cmd, t_env **env, t_all *all)
 {
 	int	i;
 
@@ -73,27 +76,38 @@ int	export_mult(char **cmd, t_env **env)
 	{
 		if (!valid_env_line(cmd[i]))
 		{
-			printf("minishell: export: `%s': not a valid identifier\n", cmd[i]);
+			ft_putstr_fd("minishell: export: `", 2);
+			ft_putstr_fd(cmd[i], 2);
+			ft_putendl_fd("': not a valid identifier", 2);
 			return (1);
 		}
 	}
 	i = 0;
 	while (cmd[++i])
-		ft_export(cmd[i], env);
+	{
+		if (!ft_export(cmd[i], env, all))
+			return (-1);
+	}
 	return (0);
 }
 
-void	ft_export(char *var, t_env **env)
+int	ft_export(char *var, t_env **env, t_all *all)
 {
 	t_env	*add_me;
 
+	if (var == NULL)
+		return (1);
 	if (line_in_env(var, *env) == -1)
-		return ;
+		return (1);
 	else if (line_in_env(var, *env))
-		replace_line_env(var, *env);
+	{
+		if (!replace_line_env(var, *env))
+			return (0);
+	}
 	else
 	{
-		add_me = env_new(var);
+		add_me = env_new(var, all);
 		env_addback(env, add_me);
 	}
+	return (1);
 }

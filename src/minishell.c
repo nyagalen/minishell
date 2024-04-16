@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 19:27:19 by cbuyurha          #+#    #+#             */
-/*   Updated: 2024/04/03 20:10:43 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/14 05:42:08 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ static void	init_all(t_all *all, char **envp)
 
 	all->info.cmd = NULL;
 	all->info.red_tab = NULL;
-	env = init_env(envp);
-	all->env = env;
+	all->env = NULL;
+	env = init_env(envp, all);
 	all->info.code = 0;
 	all->info.n_pipe = 0;
 	all->info.instr.in = -2;
@@ -48,7 +48,9 @@ void	update_sig(int *code)
 
 void	exec(t_all *all)
 {
-	if ((all->info.cmd && all->info.cmd[0]) || all->info.red_tab)
+	if (!all->info.cmd)
+		return ;
+	if (all->info.cmd[0] || all->info.red_tab)
 	{
 		if (!all->info.n_pipe)
 			no_pipe(all, all->env);

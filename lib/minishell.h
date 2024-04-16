@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 23:23:58 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/03 19:09:56 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/14 21:37:01 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,21 +55,23 @@ typedef struct s_infos
 	char	***tcmd;
 	char	**tmp;
 	char	**red_tab;
-	char	*new_r; //ajouter une nouvelle redirection
+	char	*new_r;
 	char	*buf;
-	int		*l_arg;//liste de la taille de chaque argument
+	int		*l_arg;
 	int		*l_tab;
 	int		b_len;
 	int		arg_nbr;
 	int		tab_nbr;
-	int		red_n; //nbr redirections
+	int		red_n;
 	int		red_l;
-	int		n_pipe; //faire un char ** separer pour les pipes qui seront vide ?
+	int		n_pipe;
 	int		nbr2;
-	int		w; //alternative a une variable qui doit etre reutilisee
-	int		error; //signaler l'arret de cmd_tab car erreur detecté (1 = erreur)
-	int		p_check; //si oui ou non il y a eu un argument depuis le debut de la pipe
-	int		q;//si oui on non il faut entourer le nom de '
+	int		na;
+	int		w;
+	int		error;
+	int		p_check;
+	int		er;
+	int		h;
 	int		***type;
 	int		code;
 	int		**fds;
@@ -87,83 +89,124 @@ typedef struct s_all
 
 //Partie C***********************************************
 
-//cmd_tab.int **fdsc
-char	***cmd_tab(t_all *all, char *buffer);
-//fct de creation de ***cmd et de debut du parsing
-int		split_parse(t_all *all, char *buffer, t_infos *i);
+//check
+//src/check/check_buf.c
+int		check_begin5(t_infos *i, int x, int y);
+int		check_begin4(t_infos *i, int x, int y);
+int		check_begin3(t_infos *i, int x, int y);
+int		check_begin1(t_infos *i, int x);
+int		check_buf(t_infos *i);
+//src/check/check_buf2.c
+int		cutting_buf(t_infos *i, int save);
+int		check_pipes(t_infos *i, int save);
+int		check_red2(t_infos *i, int save);
+int		check_red(t_infos *i, int save);
+int		check_middle(t_infos *i, int save);
+//src/check/pars_errors.c
+int		pars_error(int error);
 
-//cmd_conv.cint		find_variable(char *var, t_env *env);
+//cmd_pars
+//cmd_pars/cmd_pars1.c
+int		wipe_dollars2(t_all *a, char *tmp, int x, int len);
+int		wipe_dollars(t_all *a, t_infos *i, int x);
+int		skip_arg1bis(t_infos *i, int x);
+int		skip_arg1(t_all *a, t_infos *i, int x);
+int		tab_info(t_all *a, int x);
+//src/cmd_pars/cmd_pars2.c
+int		skip_arg2bis(t_all *a, t_infos *i, int x);
+int		skip_arg2(t_all *a, t_infos *i, int x);
+//src/cmd_pars/cmd_pars3.c
+int		skip_arg3(t_all *a, t_infos *i, int x);
+int		skip_arg3bis(t_all *a, char *buf, int x);
+int		new_argument(t_all *a, t_infos *i, int x, int save);
+int		new_argument2(t_all *a, t_infos *i, int save);
+int		new_quote(t_all *a, t_infos *i, int x, int save);
+
+//create_tab
+//src/create_tab/cmd_tab.c
+char	***cmd_tab1(t_all *all, char *buffer);
+char	***cmd_tab(t_all *all, char *buffer);
+int		part_pars(t_all *a, t_infos *i, char *buffer);
+int		split_parse(t_all *all, char *buffer, t_infos *i);
+int		argument_nbr(t_all *a, t_infos *i, int mode);
+//src/create_tab/cmd_conv.c
 int		find_variable(char *var, t_env *env);
 char	*find_var_val(char *var, t_env *env);
 char	*var_value_tmp(t_env *env);
 char	*var_copy(t_all *a, char *dst, char *model);
+//src/create_tab/cmd_malloc1.c
+int		tab_assign1(t_all *a, char **tab, int bx, int len);
+char	***assign_null(t_all *a, char ***tcmd);
+char	***tab_assign(t_all *a);
 
-//cmd_pars1.c
-int		ft_c_count(char c, char *str, int moinsde);
-int		skip_space(char *str, int x, int m);
-int		skip_arg1bis(t_infos *i, int x);
-int		skip_arg1(t_infos *i, int x);
-int		argument_nbr(t_all *a, int mode);
-
-//cmd_pars2.c
-int		count_dollars(t_all *a, int x, int *nbr, int mode);
-int		skip_dollars(t_all *a, int x, int *nbr);
-int 	skip_dollars2(t_all *a, int x, int mode);
-int		skip_arg2bis(t_all *a, int x, int *nbr);
-int		skip_arg2(t_all *a, int x, int *nbr);
-int		skip_arg3(t_all *a, int x, int *nbr);
-
-//cmd_malloc1.c
-int		add_dollars2(t_all *a, int save);
-int		new_argument(t_all *a, int x, int save, int *nbr);
-
-//cmd_red.c
+//red_pars
+//src/red_pars/add_red.c
+int		add_first(t_all *a, t_infos *i, int x, int save2);
+char	*add_red2(t_all *a, t_infos *i, int x);
+int		add_red3(t_all *a, t_infos *i, int x, int save);
+int		add_quotes_doll(t_all *a, int x, int save);
+int		add_red_to_34(t_all *a, t_infos *i, int x, int save);
+//src/red_pars/cmd_red.c
+int		add_red(t_all *a, int x, int n);
 int		red_init(t_all *a, t_infos *i, int x, int n);
 int		red_len(t_all *a, char *buf);
 int		skip_red_to_34(t_all *a, char *buf, int x, int len);
-int		skip_quotes(t_all *a, char *buf, int x);
-int		is_pipe(t_all *a, char **s);
-
-//red_dollars.c
-int		red_add_dollars(t_all *a, int x, int y, int m);
-int		red_var_copy(char *dst, char *model, int l);
-int		red_special_dollars(t_all *a, int x, int y, int mode);
-int		red_skip_dollars(t_all *a, char *buf, int x, int m);
+int		skip_quotes(t_all *a, char *buf, int x, int m);
+//src/red_pars/red_dollars.c
 int		red_skip_dollars2(t_all *a, char *buf, int x, int m);
-//utils/red_utils.c
-int		red_var_copy(char *dst, char *model, int l);
-int		is_pipe(t_all *a, char **s);
-int		is_red(char *s);
+int		red_skip_first_dollars(t_all *a, char *buf, int x, int m);
+int		red_skip_dollars(t_all *a, char *buf, int x, int m);
+int		red_add_first_dollars(t_all *a, int x, int y, int m);
+int		red_add_dollars(t_all *a, int x, int y, int m);
+//src/red_pars/red_doc.c
+int		doc_quotes(t_infos *i, char *buf, int x);
+int		doc_len(t_infos *i, char *buf);
+int		add_doc3(t_infos *i, int x, int save);
+char	*add_doc2(t_infos *i, int x);
+int		add_doc(t_infos *i, int x, int n);
 
-//add_remove_red.c
-int		is_red(char *s);
-//int		add_red_to_34(t_all *a, int x, int y, int save);
-int		add_red_to_34(t_all *a, int x, int save);
+//utils
+//src/utils/check_utils.c
+int		two_pipe_err(t_infos *i, int x, int mode);
+int		rev_red_err2(t_infos *i, int x);
+int		rev_red_err1(t_infos *i, int x, int m);
+int		redxpipe_err(t_infos *i, int x, int y, int m);
+int		check_begin2(t_infos *i, int x, int y);
 
-char	*add_red2(t_all *a, int x);
-int		remove_red(t_infos *i, int x, int save);
-int		add_red(t_all *a, int x, int n);
-
-
-//utils/cmd_utils.c
+//src/utils/cmd_utils.c
 char	***free_tab3(char ***cmd);
 char	**free_tab(char **tab);
-//fct de free de free tab3
+int		pars_error_free(t_infos *i, int m);
+//src/utils/dollars_utils.c
+int		special_dollars(t_all *a, int x, int nbr, int mode);
+int		add_dollars2(t_all *a, t_infos *i, int save);
+int		skip_dollars2(t_all *a, int x, int m);
+int		skip_dollars(t_all *a, t_infos *i, int x);
+int		count_dollars(t_all *a, int x, int mode);
+//src/utils/print_utils.c
 int		print_tab(char **tab);
 void	print_tabx2(char ***tab, int x);
 int		print_intx2(int *tab);
-int 	skip_char(char *str, char skip, int m);
+//src/utils/red_utils.c
+int		red_var_copy(char *dst, char *model, int l);
+int		is_pipe(t_all *a, char **s);
+int		is_red(char *s);
+int		remove_red(t_infos *i, int x, int save);
+int		red_special_dollars(t_all *a, int x, int y, int mode);
+//src/utils/skip_utils.c
+int		ft_c_count(char c, char *str, int moinsde);
+int		skip_space(char *str, int x, int m);
+int		skip_char(char *str, char skip, int m);
 
-
-//partie S*****************************************************
+//partie S*****************************************************			
 //dans test_geft_close(infos->pipin);
 	// ft_close(infos->pipout);
 	// infos->pipin = -1;
 	// infos->pipout = -1;tline.c
 char	*new_entry(t_infos *info);
-void	if_signaled(t_infos *info, int code);
+int		if_signaled(int code);
 //nouvelle entree de terminal(free buffer + cmd; readline)
-int		execpart(t_infos *infos, t_env *env, int i);
+int		execpart(t_infos *infos, t_env *env, int i, t_all *all);
 void	free_arr(char **arr);
 int		exec_cmd(t_infos *infos, char *exec, t_env *env, int i);
 
@@ -184,12 +227,12 @@ int		perm_denied(char *exec);
 
 //dans built_in.	reset_in_out(&all.info);c
 int		is_built_in(char *cmd);
-int		built_in_cd(char *path);
+int		built_in_cd(char **cmd, t_env *env, t_all *all);
 int		built_in_pwd(void);
-int		exec_builtin(t_infos *infos, t_env *env, int i);
+int		exec_builtin(t_infos *infos, t_env *env, int i, t_all *all);
 
 //dans env.c
-t_env	*init_env(char **envp);
+t_env	*init_env(char **envp, t_all *all);
 void	print_env(t_env *env);
 void	free_env(t_env **env);
 char	*var_value(t_env *env);
@@ -198,15 +241,15 @@ char	*value_by_name(char *name, t_env *env);
 //dans env_utils.c
 void	env_addback(t_env **env, t_env *new);
 t_env	*env_last(t_env *env);
-t_env	*env_new(char *new_l);
+t_env	*env_new(char *new_l, t_all *all);
 int		index_str(char *str, char c);
 int		valid_env_var(char *var);
 
 //dans env2.c
-void	ft_export(char *var, t_env **env);
-void	replace_line_env(char *line, t_env *env);
+int		ft_export(char *var, t_env **env, t_all *all);
+int		replace_line_env(char *line, t_env *env);
 int		line_in_env(char *line, t_env *env);
-int		export_mult(char **cmd, t_env **env);
+int		export_mult(char **cmd, t_env **env, t_all *all);
 //int		valid_ft_close(infos->pipin);
 	// ft_close(infos->pipout);
 	// infos->pipin = -1;
@@ -245,7 +288,7 @@ void	no_pipe(t_all *all, t_env *env);
 //dans pipe.c
 void	if_signaled_pipes(int code);
 void	pipe_wait(t_infos *info, int forks, int letswait);
-void	malloc_pids_fds(t_infos *info);
+int		malloc_pids_fds(t_infos *info);
 int		file_success(t_all *all, int i, int forks);
 
 //dans pipe2.c
@@ -257,7 +300,7 @@ int		open_file(t_all *all, char *red, int *fdin, int *fdout);
 int		is_heredoc(char *red);
 
 //dans pipe_loop.c
-void	handle_redirections(t_all *all, int i, int *forks, int *letswait);
+int		handle_redirections(t_all *all, int i, int *forks, int *letswait);
 void	interrupted_heredoc(t_infos *info);
 void	end_loop(t_infos *info, int forks, int letswait);
 
@@ -273,6 +316,9 @@ int		get_inf_outf(t_all *all);
 
 //dans utils2.c
 void	free_resources_child(t_infos *info, t_env *env);
+int		erreur(char type);
+void	free_pids_fds_hdfs(t_infos *info);
+int		env_size(t_env *env);
 
 //dans heredoc.c
 int		heredoc(t_all *all, char *red, int *fdin);
@@ -291,6 +337,9 @@ void	end_heredoc(char *input, int line, char *eof);
 //dans exit_refact.c
 int		exit_error(t_infos *infos, int i);
 void	exit_blabla(t_infos *info, int i);
+
+//dans envp.c
+char	**copy_envp(t_env *env);
 
 #endif
 // dsifhids fuidgsifsdgfugs fgdsu fgsugdf fugsdd

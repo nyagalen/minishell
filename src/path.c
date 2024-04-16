@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 18:21:45 by svydrina          #+#    #+#             */
-/*   Updated: 2024/02/11 23:54:17 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/13 17:27:16 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,27 @@ static char	*cat_bin(char *path, char *cmd)
 	char	*slash;
 
 	slash = ft_strdup("/\0");
+	if (!slash)
+		return (NULL);
 	bin = calloc(sizeof(char), ft_strlen(path) + 1
 			+ ft_strlen(cmd) + 1);
 	if (!bin)
+	{
+		free(slash);
 		return (NULL);
+	}
 	ft_strlcat(bin, path, ft_strlen(path) + 1);
 	ft_strlcat(bin, slash, ft_strlen(path) + 2);
 	ft_strlcat(bin, cmd, ft_strlen(path) + 2
 		+ ft_strlen(cmd));
 	free(slash);
 	return (bin);
+}
+
+static void	free_bin(char **bin)
+{
+	free(*bin);
+	*bin = NULL;
 }
 
 char	*get_bin(char *cmd, char *path)
@@ -38,18 +49,19 @@ char	*get_bin(char *cmd, char *path)
 
 	bin = NULL;
 	i = -1;
-	if (path && cmd && !ft_strchr(cmd, '/'))
+	if (path && cmd && cmd[0] && !ft_strchr(cmd, '/'))
 	{
 		path_split = ft_split(path + 5, ":");
+		if (!path_split)
+			return (NULL);
 		while (path_split[++i])
 		{
 			bin = cat_bin(path_split[i], cmd);
 			if (!bin)
-				break ;
+				return (NULL);
 			if (access(bin, F_OK) == 0)
 				break ;
-			free(bin);
-			bin = NULL;
+			free_bin(&bin);
 		}
 		free_arr(path_split);
 	}

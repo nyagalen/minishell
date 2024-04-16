@@ -3,101 +3,68 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_pars1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbuyurha <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 20:49:22 by cbuyurha          #+#    #+#             */
-/*   Updated: 2024/02/29 20:49:26 by cbuyurha         ###   ########.fr       */
+/*   Updated: 2024/04/13 19:11:38 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../lib/minishell.h"
-/*
-int	cmd_check_pipe2(t_infos *i, int x, int check)
+
+int	wipe_dollars2(t_all *a, char *tmp, int x, int len)
 {
-	while (i->buf[++i->w])
-	{
-		if (i->buf[i->w] == '|')
-		{
-			if (i->buf[i->w + 1] && i->buf[i->w + 1] == '|')
-			{
-				if (check == 1 && i->buf[i->w - 1] != '|' && ++i->error > 0)
-					write(2, &"-minishell: syntax error near unexpected token `||'\n", 52);
-				else if (check == 2 && i->buf[i->w - 1] && i->buf[i->w - 1] == '|' && ++i->error > 0)
-					write(2, &"-minishell: syntax error near unexpected token `|'\n", 51);
-				else if (check == 2 && ++i->error > 0)
-					write(2, &"-minishell: syntax error near unexpected token `||'\n", 52);
-			}
-			else if (!i->buf[i->w + 1] || (i->buf[i->w + 1] && i->buf[i->w + 1] != '|'))
-			{
-				if ((check == 2 || (check == 1 && i->buf[i->w - 1] != '|')) && ++i->error > 0)
-					write(2, &"-minishell: syntax error near unexpected token `|'\n", 51);
-			}
-			if (i->error > 0)
-			{
-				i->b_len = x - 1;
-				return (-2);
-			}
-		}
-		if (i->buf[i->w] != ' ' && i->buf[i->w] != '	' && i->buf[i->w] != '|')
-			check = 0;
-		if (i->buf[i->w] == 34)
-		{
-			while (i->buf[++i->w] && i->buf[i->w] != 34)
-				check = 0;
-		}
-		if (i->buf[i->w] && i->buf[i->w] == 39)
-		{
-			while (i->buf[++i->w] && i->buf[i->w] != 39)
-				check = 0;
-		}
-		if (i->buf[i->w] && i->buf[i->w] == '|')
-			++check;
-	}
-	if (!i->buf[i->w] && check > 0 && ++i->error > 0)
-	{
-		write(2, &"`|' opened\n", 12);
-		i->b_len = x - 1;
-		return (-2);
-	}
+	int	l;
+
+	l = a->info.b_len - len;
+	free(tmp);
+	tmp = malloc(sizeof(char) * (l + 2));
+	if (!tmp)
+		return (a->info.error = 1, -2);
+	ft_strlcpy(tmp, a->info.buf, x + 1);
+	tmp[x] = ' ';
+	ft_strlcpy(&tmp[x + 1], &a->info.buf[x + len], (l - x + 1));
+	free(a->info.buf);
+	a->info.buf = ft_strdup(tmp);
+	if (!a->info.buf)
+		return (a->info.error = 1, -2);
+	free(tmp);
+	a->info.b_len = ft_strlen(a->info.buf);
+	if (a->info.buf[x + 1] == '$')
+		return (wipe_dollars(a, &a->info, x + 1));
 	return (0);
 }
 
-int	cmd_check_pipe1(t_infos *i, int x)
+int	wipe_dollars(t_all *a, t_infos *i, int x)
 {
-//	printf("	i->n_pipe: %d\n", i->n_pipe);
-	i->w = x;
-	if (i->n_pipe <= 1 && i->arg_nbr <= 1)
-	{
-		if (i->buf[i->w + 1] && i->buf[i->w + 1] == '|')
-			write(2, &"-minishell: syntax error near unexpected token `||'\n", 52);
-		else
-			write(2, &"-minishell: syntax error near unexpected token `|'\n", 51);
-		++i->error;
-		i->b_len = x - 1;
-		return (x);
-	}
-	if (i->buf[i->w + 1] && i->buf[i->w + 1] == '|' && ++i->w > 0)
-	{
-		if (i->n_pipe <= 1 && cmd_check_pipe2(i, x, 2) == -2)
-			return (x);
-		i->buf[x] = ' ';
-		ft_memset(&i->buf[x + 1], 0, i->b_len - x);
-		i->n_pipe--;
-		i->b_len = x + 1;
-		--i->arg_nbr;
-		--i->tab_nbr;
-	}
-	else if (i->n_pipe <= 1 && cmd_check_pipe2(i, x, 1) == -2)
-		return (x);
-	return (++x);
-}*/ /*fdsf dfssd |||"|dsf" dsf dsfdsf*/
+	char	*tmp_env;
+	int		len;
 
+	tmp_env = NULL;
+	len = skip_dollars2(a, x, 1);
+	if (len == -2 || len == -3)
+		return (1);
+	++len;
+	if (i->buf[x + len] && i->buf[x + len] != ' ' && i->buf[x + len] != '	')
+	{
+		if (i->buf[x + len] != '$' && i->buf[x + len] != '|')
+			return (1);
+	}
+	tmp_env = malloc(sizeof(char) * (len));
+	if (!tmp_env)
+		return (i->error = 1, -2);
+	ft_strlcpy(tmp_env, &i->buf[x + 1], len);
+	if (find_variable(tmp_env, a->env) == 1)
+		return (free(tmp_env), 1);
+	else if (len != 1)
+		return (wipe_dollars2(a, tmp_env, x, len));
+	free(tmp_env);
+	return (1);
+}
 
 int	skip_arg1bis(t_infos *i, int x)
 {
-	/*if (i->buf[x] == '|')
-		return (cmd_check_pipe1(i, x));*/
-	if (i->buf[x] == '|')
+	if (x < i->b_len && i->buf[x] == '|')
 		return (++x);
 	while (x < i->b_len && i->buf[x] != '	' && i->buf[x] != ' ')
 	{
@@ -105,8 +72,6 @@ int	skip_arg1bis(t_infos *i, int x)
 			x = x + skip_char(&i->buf[x], 34, 1);
 		if (x < i->b_len && i->buf[x] == 39 && ++x <= i->b_len)
 			x = x + skip_char(&i->buf[x], 39, 1);
-		if (x == i->b_len && ++i->error > 0)
-			write(2, &"open quote error\n", 17); //a gerer
 		if (i->buf[x] == '|')
 			return (x);
 		++x;
@@ -114,9 +79,12 @@ int	skip_arg1bis(t_infos *i, int x)
 	return (x);
 }
 
-int	skip_arg1(t_infos *i, int x)
+int	skip_arg1(t_all *a, t_infos *i, int x)
 {
-	//printf("	1 i->p_check: %d (x: %d/b_len: %d), tab_nbr: %d\n", i->p_check, x, i->b_len, i->tab_nbr);
+	if (x < i->b_len && i->buf[x] == '$' && wipe_dollars(a, i, x) <= 0)
+		return (++x);
+	if (x < i->b_len && i->buf[x] == ' ')
+		x = skip_space(a->info.buf, x, 1);
 	if (x < i->b_len && (x == 0 || i->buf[x] == '|' || i->buf[x - 1] == '|'))
 	{
 		if (i->buf[x] == '|')
@@ -137,14 +105,30 @@ int	skip_arg1(t_infos *i, int x)
 		i->p_check = 0;
 		++i->arg_nbr;
 	}
-//	printf("	2 i->p_check: %d -> tqb_nbr: %d\n", i->p_check, i->tab_nbr);
-	x = skip_arg1bis(i, x);
-	return (x);
+	return (skip_arg1bis(i, x));
 }
-
 /* recupere l'argument c et boucle (en ++arg_nbr si il y a un espace avant) 
-jusqu'a le renconrer une deuxieme fois ou a depasser b_len (taille du buffer), dans ce cas message d'erreur a gerer
+jusqu'a le renconrer une deuxieme fois ou a depasser b_len (taille du buffer)
+ dans ce cas message d'erreur a gerer
 si c = ' ', meme chose*/
 /*skip les parties qui ne concernent pas les commandes, 
 ajouter les | et les < ici plus tard*/
 /*sdf'fsdf'" fdsf"*/
+
+int	tab_info(t_all *a, int x)
+{
+	if (!a->info.buf)
+		return (-1);
+	while (x < a->info.b_len && a->info.buf[x])
+	{
+		x = skip_space(a->info.buf, x, 1);
+		x = skip_arg1(a, &a->info, x);
+		if (a->info.error > 0)
+			return (-2);
+	}
+	if (a->info.error > 0)
+		return (-2);
+	if (a->info.p_check == 1)
+		a->info.tab_nbr++;
+	return (a->info.arg_nbr);
+}

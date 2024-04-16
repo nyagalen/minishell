@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svetlana <svetlana@student.42.fr>          +#+  +:+       +#+        */
+/*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 16:32:18 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/10 00:12:40 by svetlana         ###   ########.fr       */
+/*   Updated: 2024/04/06 02:07:42 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,26 @@ t_env	*env_last(t_env *env)
 	return (env);
 }
 
-t_env	*env_new(char *new_l)
+t_env	*env_new(char *new_l, t_all *all)
 {
 	t_env	*new;
 
 	new = malloc(sizeof(t_env));
 	if (!new)
+	{
 		perror("Malloc error");
+		free_env(&all->env);
+		exit(2);
+	}
+	if (all->env == NULL)
+		all->env = new;
 	new->line = ft_strdup(new_l);
+	if (!new->line)
+	{
+		perror("Malloc error");
+		free_env(&all->env);
+		exit(2);
+	}
 	new->next = NULL;
 	return (new);
 }

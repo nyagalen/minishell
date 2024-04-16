@@ -6,7 +6,7 @@
 #    By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 23:06:33 by svydrina          #+#    #+#              #
-#    Updated: 2024/04/03 18:38:11 by svydrina         ###   ########.fr        #
+#    Updated: 2024/04/14 20:24:26 by svydrina         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,14 +17,15 @@ src/env2.c src/env_utils.c src/create_tab/cmd_tab.c \
 src/exit.c src/minishell.c src/test_getline.c \
 src/unset.c src/echo.c src/utils.c src/shlvl.c \
 src/utils/cmd_utils.c src/utils/print_utils.c src/utils/dollars_utils.c \
-src/create_tab/cmd_conv.c src/create_tab/cmd_malloc1.c \
+src/create_tab/cmd_conv.c src/create_tab/cmd_malloc.c src/utils/check_utils.c\
 src/cmd_pars/cmd_pars1.c src/cmd_pars/cmd_pars2.c src/cmd_pars/cmd_pars3.c\
-src/cmd_pars/check_buf.c src/cmd_pars/pars_errors.c src/cmd_pars/check_buf2.c\
-src/utils/red_utils.c src/red_pars/red_dollars.c\
-src/red_pars/add_remove_red.c src/red_pars/cmd_red.c\
+src/check/check_buf.c src/check/pars_errors.c src/check/check_buf2.c\
+src/utils/red_utils.c src/red_pars/red_dollars.c src/utils/skip_utils.c\
+src/red_pars/add_red.c src/red_pars/cmd_red.c src/red_pars/red_doc.c\
 src/error2.c src/pipe.c src/pipe2.c src/redir.c src/open_file.c src/no_pipe.c\
 src/redir2.c src/utils2.c src/heredoc.c src/pipe_loop.c\
-src/pipe_loop_eigentlich.c src/heredoc_pipes.c src/exit_refact.c
+src/pipe_loop_eigentlich.c src/heredoc_pipes.c src/exit_refact.c src/cd.c\
+src/envp.c
 
 
 OBJS = $(SRCS:.c=.o)
@@ -59,7 +60,10 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+leak:
+	valgrind --suppressions=leaks.sup --leak-check=full --track-fds=yes -q ./$(NAME)
+
+.PHONY: all clean fclean re leak
 #note
 #	$USER 		-> |buyuc|		vs $? 		-> |0|
 #	$USERfdsf	-> ||			vs $?dfs 	-> |0dfs|

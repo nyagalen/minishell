@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 01:51:07 by svydrina          #+#    #+#             */
-/*   Updated: 2024/03/13 18:18:39 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/13 23:28:28 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,6 @@ int	is_built_in(char *cmd)
 	return (0);
 }
 
-int	built_in_cd(char *path)
-{
-	if (chdir(path) == -1)
-		return (write_cd_error(path));
-	return (0);
-}
-
 int	built_in_pwd(void)
 {
 	char	cwd[PATH_MAX];
@@ -45,16 +38,16 @@ int	built_in_pwd(void)
 	return (0);
 }
 
-int	exec_builtin(t_infos *infos, t_env *env, int i)
+int	exec_builtin(t_infos *infos, t_env *env, int i, t_all *all)
 {
 	if (!ft_strcmp(infos->cmd[i][0], "pwd"))
 		return (built_in_pwd());
 	else if (!ft_strcmp(infos->cmd[i][0], "cd"))
-		return (built_in_cd(infos->cmd[i][1]));
+		return (built_in_cd(infos->cmd[i], env, all));
 	else if (!ft_strcmp(infos->cmd[i][0], "env"))
 		print_env(env);
 	else if (!ft_strcmp(infos->cmd[i][0], "export"))
-		return (export_mult(infos->cmd[i], &env));
+		return (export_mult(infos->cmd[i], &env, all));
 	else if (!ft_strcmp(infos->cmd[i][0], "unset"))
 		ft_unset(infos->cmd[0], &env);
 	else if (!ft_strcmp(infos->cmd[i][0], "echo"))

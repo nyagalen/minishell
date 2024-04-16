@@ -6,13 +6,13 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 22:24:41 by svydrina          #+#    #+#             */
-/*   Updated: 2024/02/23 04:28:35 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/14 05:59:16 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../lib/minishell.h"
 
-t_env	*init_env(char **envp)
+t_env	*init_env(char **envp, t_all *all)
 {
 	int		i;
 	t_env	*env;
@@ -20,7 +20,7 @@ t_env	*init_env(char **envp)
 	i = -1;
 	env = NULL;
 	while (envp[++i])
-		env_addback(&env, env_new(envp[i]));
+		env_addback(&env, env_new(envp[i], all));
 	return (env);
 }
 

@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/01 18:29:49 by svydrina          #+#    #+#             */
-/*   Updated: 2024/02/12 00:25:02 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/14 06:15:26 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ int	failed_exec(char *exec, t_env *env)
 	if (value_by_name("PATH", env) && !ft_strchr(exec, '/'))
 		code = write_error(exec);
 	else if ((!value_by_name("PATH", env) && !ft_strchr(exec, '/'))
-		|| (fd == -1 && folder == NULL))
+		|| (access(exec, F_OK) && fd == -1 && folder == NULL))
 		code = no_such_file_error(exec);
 	else if (fd == -1 && folder != NULL)
 		code = is_a_dir_err(exec);
-	else if (fd != -1 && folder == NULL)
+	else if (folder == NULL && access(exec, X_OK))
 		code = perm_denied(exec);
 	if (folder)
 		closedir(folder);

@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 23:30:04 by svydrina          #+#    #+#             */
-/*   Updated: 2024/03/30 21:38:17 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/14 21:37:08 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,24 +18,31 @@ static int	is_non_printing_builtin(char *command)
 		|| !ft_strcmp(command, "export") || !ft_strcmp(command, "unset"));
 }
 
-static int	exec_no_pipe(t_infos *info, t_env *env)
+static int	exec_no_pipe(t_infos *info, t_env *env, t_all *all)
 {
 	int	code;
 	int	pid;
 
 	code = 0;
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)
-		perror("pid error");
+	{
+		erreur('f');
+		return (-1);
+	}
 	if (!pid)
 	{
 		ft_dup(info);
-		code = execpart(info, env, 0);
+		code = execpart(info, env, 0, all);
 		exit(exitcode(code));
 	}
 	waitpid(pid, &code, 0);
 	if (WIFSIGNALED(code))
-		if_signaled(info, code);
+		code = if_signaled(code);
+	signal(SIGINT, handle_signals);
+	signal(SIGQUIT, handle_signals);
 	return (code);
 }
 
@@ -44,16 +51,19 @@ void	no_pipe(t_all *all, t_env *env)
 	int		code;
 
 	code = 0;
-	if (!assign_inout_handle_err(all) || !all->info.cmd[0][0])
+	if (assign_inout_handle_err(all) <= 0 || !all->info.cmd[0][0])
 	{
 		all->info.instr.red_start = 0;
 		return ;
 	}
 	if (is_non_printing_builtin(all->info.cmd[0][0]))
-		code = exec_builtin(&all->info, env, 0);
+		code = exec_builtin(&all->info, env, 0, all);
 	else
-		code = exec_no_pipe(&all->info, env);
+		code = exec_no_pipe(&all->info, env, all);
+	if (code == 42 || code == -1)
+		erreur('m');
 	reset_in_out(&all->info);
 	all->info.instr.red_start = 0;
-	all->info.code = exitcode(code);
+	if (all->info.code > -1)
+		all->info.code = exitcode(code);
 }

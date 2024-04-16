@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 17:23:57 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/03 23:26:19 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/15 23:23:39 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@ void	sig_heredoc(int sig)
 		rl_on_new_line();
 		rl_redisplay();
 		printf("  \b\b");
+	}
+	else if (sig == SIGINT)
+	{
+		write(1, "\n", 1);
+		close(STDIN_FILENO);
+		g_sig = 130;
 	}
 }
 
@@ -33,8 +39,8 @@ static void	heredoc_child(t_all *all, int *fdin, char *eof)
 	char	*input;
 
 	input = NULL;
-	signal(SIGQUIT, sig_heredoc);
-	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, sig_heredoc);
 	input = readline("> ");
 	*fdin = open(".txt", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (*fdin == -1)
@@ -47,36 +53,28 @@ static void	heredoc_child(t_all *all, int *fdin, char *eof)
 		input = readline("> ");
 	}
 	end_heredoc(input, all->info.instr.line, eof);
-	free_resources_child(&all->info, all->env);
 	ft_close(*fdin);
-	exit (0);
 }
 
 int	heredoc(t_all *all, char *red, int *fdin)
 {
 	char	*eof;
-	int		pid;
-	int		sig;
-	int		status;
+	int		hold_fd;
 
 	eof = red + 2;
+	hold_fd = dup(STDIN_FILENO);
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, SIG_IGN);
-	pid = fork();
-	if (!pid)
-		heredoc_child(all, fdin, eof);
-	waitpid(pid, &status, 0);
+	heredoc_child(all, fdin, eof);
 	signal(SIGINT, handle_signals);
 	signal(SIGQUIT, handle_signals);
-	if (WIFSIGNALED(status))
-	{
-		sig = WTERMSIG(status);
-		printf("\n");
-		return (128 + sig);
-	}
-	*fdin = open(".txt", O_RDONLY, 0644);
+	ft_close(*fdin);
+	if (!g_sig)
+		*fdin = open(".txt", O_RDONLY, 0644);
 	unlink(".txt");
-	return (0);
+	dup2(hold_fd, STDIN_FILENO);
+	close(hold_fd);
+	return (g_sig);
 }
 
 void	handle_signals(int sig)
