@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 23:23:58 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/14 21:37:01 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/17 21:11:30 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_instr
 	int		cmd_i;
 	int		hd_i;
 	int		line;
+	int		orig_exitcode;
 }	t_instr;
 
 typedef struct s_infos
@@ -256,9 +257,9 @@ int		export_mult(char **cmd, t_env **env, t_all *all);
 	// infos->pipout = -1;env_line(char *line);
 
 //dans unset.c
-void	ft_unset(char **cmd, t_env **env);
-void	env_remove_if(char *var, t_env **env);
-void	valid_and_remove(char *var, t_env **env);
+void	ft_unset(char **cmd, t_env **env, t_all *all);
+void	env_remove_if(char *var, t_env **env, t_all *all);
+void	valid_and_remove(char *var, t_env **env, t_all *all);
 int		var_in_line(char *var, char *line);
 int		var_in_env(char *var, t_env *env);
 
