@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 19:27:19 by cbuyurha          #+#    #+#             */
-/*   Updated: 2024/04/14 05:42:08 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:53:35 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ static void	init_all(t_all *all, char **envp)
 	all->info.instr.status = 0;
 	all->info.instr.cmd_i = 0;
 	all->info.instr.hd_i = 0;
+	all->info.instr.orig_exitcode = 0;
 	all->info.instr.line = 1;
 	all->info.pids = NULL;
 	all->info.fds = NULL;

@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 23:26:30 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/14 22:18:03 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/17 16:38:40 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,10 @@ int	replace_line_env(char *line, t_env *env)
 int	export_mult(char **cmd, t_env **env, t_all *all)
 {
 	int	i;
+	int	ret;
 
 	i = 0;
+	ret = 0;
 	while (cmd[++i])
 	{
 		if (!valid_env_line(cmd[i]))
@@ -79,16 +81,15 @@ int	export_mult(char **cmd, t_env **env, t_all *all)
 			ft_putstr_fd("minishell: export: `", 2);
 			ft_putstr_fd(cmd[i], 2);
 			ft_putendl_fd("': not a valid identifier", 2);
-			return (1);
+			ret = 1;
+		}
+		else
+		{
+			if (!ft_export(cmd[i], env, all))
+				return (-1);
 		}
 	}
-	i = 0;
-	while (cmd[++i])
-	{
-		if (!ft_export(cmd[i], env, all))
-			return (-1);
-	}
-	return (0);
+	return (ret);
 }
 
 int	ft_export(char *var, t_env **env, t_all *all)

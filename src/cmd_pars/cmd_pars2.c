@@ -27,7 +27,7 @@ int	skip_arg2bis(t_all *a, t_infos *i, int x)
 			x = x + skip_dollars(a, i, x);
 		if (x < i->b_len && b[x] == 34)
 			x = count_dollars(a, ++x, 1);
-		if (x < i->b_len && b[x] == 39 && ++x < i->b_len)
+		if (x < i->b_len && b[x] && b[x] == 39 && ++x < i->b_len)
 		{
 			while (b[x] != 39 && ++x < i->b_len)
 				++i->l_arg[i->na - 1];

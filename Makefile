@@ -6,7 +6,7 @@
 #    By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 23:06:33 by svydrina          #+#    #+#              #
-#    Updated: 2024/04/14 20:24:26 by svydrina         ###   ########.fr        #
+#    Updated: 2024/04/18 20:02:40 by svydrina         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,7 +61,8 @@ fclean: clean
 re: fclean all
 
 leak:
-	valgrind --suppressions=leaks.sup --leak-check=full --track-fds=yes -q ./$(NAME)
+	valgrind --suppressions=/mnt/nfs/homes/svydrina/RENDU/minishell/leaks.sup --leak-check=full --trace-children=yes \
+	--show-leak-kinds=all --track-fds=yes ./$(NAME)
 
 .PHONY: all clean fclean re leak
 #note

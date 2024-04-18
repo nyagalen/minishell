@@ -111,8 +111,8 @@ int	skip_dollars(t_all *a, t_infos *i, int x)
 
 	tmp_env = NULL;
 	len = skip_dollars2(a, x, 1);
-	if (len == -2)
-		return (--i->l_arg[i->na - 1], len);
+	if (len == -2 && --i->l_arg[i->na - 1] > -5)
+		return (0);
 	if (len == -3)
 		return (special_dollars(a, x, i->na, 1));
 	if (i->buf[x + 1] && ft_isdigit(i->buf[x + 1]) == 1)

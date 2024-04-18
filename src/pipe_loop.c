@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 20:52:03 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/06 04:23:07 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:57:59 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,9 @@ void	interrupted_heredoc(t_infos *info)
 void	end_loop(t_infos *info, int forks, int letswait)
 {
 	pipe_wait(info, forks, letswait);
+	if (!ft_strcmp("exit", info->cmd[info->n_pipe * 2][0])
+		&& !info->cmd[info->n_pipe * 2][1])
+		info->code = info->instr.orig_exitcode;
 	info->instr.red_start = 0;
 	info->instr.hd_i = 0;
 	reset_in_out(info);

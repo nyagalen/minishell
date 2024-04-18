@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 02:29:02 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/06 04:33:03 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:47:57 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ void	loop(t_all *all)
 	int	heredoc_success;
 
 	forks = 0;
+	all->info.instr.orig_exitcode = all->info.code;
 	heredoc_success = malloc_handle_hds(all);
 	if (heredoc_success)
 		return ;

@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/27 18:37:10 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/14 21:46:08 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:10:01 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ void	if_signaled_pipes(int code)
 	{
 		rl_replace_line("", 0);
 		rl_redisplay();
-		printf("  \b\b\b");
+		ft_putstr_fd("  \b\b\b", 2);
 	}
 	else
-		printf("\b\b\b   \b\b\b");
+		ft_putstr_fd("\b\b\b   \b\b\b", 2);
 }
 
 static int	pipe_wait_code(int code)
@@ -29,7 +29,7 @@ static int	pipe_wait_code(int code)
 	if (code == 2)
 		code += 128;
 	else if (code == 131)
-		printf("\\\\Quit (core dumped)\n");
+		ft_putendl_fd("\\Quit (core dumped)", 2);
 	return (exitcode(code));
 }
 

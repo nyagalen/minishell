@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/07 18:06:07 by cbuyurha          #+#    #+#             */
-/*   Updated: 2024/04/11 17:27:28 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/18 19:51:44 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,14 @@ int	split_parse(t_all *a, char *buffer, t_infos *i)
 	if (tab_info(a, 0) == -2)
 		return (pars_error_free(i, 0));
 	i->tmp = malloc(sizeof(char *) * (i->arg_nbr + 1));
+	if (!i->tmp)
+		return (i->error = 1, pars_error_free(i, 0));
 	i->l_arg = malloc(sizeof(int) * (i->arg_nbr + 1));
+	if (!i->l_arg)
+		return (i->error = 1, pars_error_free(i, 1));
 	i->l_tab = malloc(sizeof(int) * (i->tab_nbr + 2));
+	if (!i->l_tab)
+		return (i->error = 1, pars_error_free(i, 1));
 	i->tab_nbr = -1;
 	i->p_check = 0;
 	if (argument_nbr(a, i, 2) == -2)
@@ -108,6 +114,7 @@ char	***cmd_tab1(t_all *all, char *buffer)
 
 char	***cmd_tab(t_all *all, char *buffer)
 {
+	all->info.error = 0;
 	all->info.cmd = cmd_tab1(all, buffer);
 	if (all->info.error > 0)
 		all->info.code = 2;

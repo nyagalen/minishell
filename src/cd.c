@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 23:14:57 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/14 06:13:23 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/18 19:07:52 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ static int	change_pwd(t_env *env, t_all *all)
 	char	*new_join;
 
 	newpwd = getcwd(cwd, sizeof(cwd));
+	if (!newpwd)
+		return (0);
 	new_join = ft_strjoin("PWD=", newpwd);
 	if (!new_join)
 		return (-1);

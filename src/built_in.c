@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 01:51:07 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/13 23:28:28 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/17 21:08:09 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	exec_builtin(t_infos *infos, t_env *env, int i, t_all *all)
 	else if (!ft_strcmp(infos->cmd[i][0], "export"))
 		return (export_mult(infos->cmd[i], &env, all));
 	else if (!ft_strcmp(infos->cmd[i][0], "unset"))
-		ft_unset(infos->cmd[0], &env);
+		ft_unset(infos->cmd[0], &env, all);
 	else if (!ft_strcmp(infos->cmd[i][0], "echo"))
 		ft_echo(infos->cmd[i]);
 	else if (!ft_strcmp(infos->cmd[i][0], "exit"))

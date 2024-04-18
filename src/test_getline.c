@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 21:16:26 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/16 21:55:20 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:10:36 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,12 @@ int	if_signaled(int code)
 	{
 		rl_replace_line("", 0);
 		rl_redisplay();
-		printf("  \b\b");
-		printf("Quit (core dumped)\n");
+		ft_putstr_fd("  \b\b", 2);
+		ft_putendl_fd("Quit (core dumped)", 2);
 	}
 	else
 	{
-		printf("  \b\b");
-		printf("\n");
+		ft_putendl_fd("  \b\b", 2);
 		return (code + 128);
 	}
 	return (code);
@@ -72,7 +71,10 @@ int	execpart(t_infos *infos, t_env *env, int i, t_all *all)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	if (!ft_strcmp(infos->cmd[i][0], ".."))
-		return (write_error(infos->cmd[i][0]));
+	{
+		write_error(infos->cmd[i][0]);
+		return (free_resources_child(infos, env), 127);
+	}
 	if (is_built_in(infos->cmd[i][0]))
 		return (do_builtin(all, i, infos, env));
 	else

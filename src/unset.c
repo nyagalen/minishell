@@ -3,76 +3,69 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svetlana <svetlana@student.42.fr>          +#+  +:+       +#+        */
+/*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 18:33:51 by svydrina          #+#    #+#             */
-/*   Updated: 2024/01/10 00:07:48 by svetlana         ###   ########.fr       */
+/*   Updated: 2024/04/17 21:33:23 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../lib/minishell.h"
 
-int	var_in_line(char *var, char *line)
-{
-	int	i;
-
-	i = -1;
-	while (var[++i])
-	{
-		if (var[i] != line[i])
-			return (0);
-	}
-	return (1);
-}
-
-int	var_in_env(char *var, t_env *env)
-{
-	while (env)
-	{
-		if (var_in_line(var, env->line))
-			return (1);
-		env = env->next;
-	}
-	return (0);
-}
-
-void	ft_unset(char **cmd, t_env **env)
+void	ft_unset(char **cmd, t_env **env, t_all *all)
 {
 	int	i;
 
 	i = 0;
 	while (cmd[++i])
-		valid_and_remove(cmd[i], env);
+		valid_and_remove(cmd[i], env, all);
 }
 
-void	valid_and_remove(char *var, t_env **env)
+void	valid_and_remove(char *var, t_env **env, t_all *all)
 {
 	if (!valid_env_var(var) || !var_in_env(var, *env))
 		return ;
-	env_remove_if(var, env);
+	env_remove_if(var, env, all);
 }
 
-void	env_remove_if(char *var, t_env **env)
+static int	is_env_variable(char *var, char *line)
 {
-	int		eq;
+	int	eq;
+
+	eq = index_str(line, '=');
+	return (ft_strncmp(var, line, eq));
+}
+
+static void	free_maillon(t_env **env)
+{
+	free((*env)->line);
+	(*env)->line = NULL;
+	free(*env);
+	env = NULL;
+}
+
+void	env_remove_if(char *var, t_env **env, t_all *all)
+{
 	t_env	*next;
 	t_env	*prev;
 	t_env	*cur;
 
 	cur = *env;
 	prev = NULL;
+	next = NULL;
 	while (cur != NULL)
 	{
 		next = cur->next;
-		eq = index_str(cur->line, '=');
-		if (!ft_strncmp(var, cur->line, eq))
+		if (!is_env_variable(var, cur->line))
 		{
 			if (!prev)
+			{
 				*env = next;
+				all->env = *env;
+			}
 			else
 				prev->next = next;
-			free(cur->line);
-			free(cur);
+			free_maillon(&cur);
 		}
 		else
 			prev = cur;
