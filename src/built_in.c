@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 01:51:07 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/17 21:08:09 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/20 03:09:01 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,32 +27,44 @@ int	is_built_in(char *cmd)
 	return (0);
 }
 
-int	built_in_pwd(void)
+int	built_in_pwd(t_infos *info)
 {
 	char	cwd[PATH_MAX];
 
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("%s\n", cwd);
-	else
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
 		perror("getcwd()");
+		return (-1);
+	}
+	else if (!info->n_pipe)
+		ft_putendl_fd(cwd, info->instr.out);
+	else if (info->n_pipe)
+		printf("%s\n", cwd);
 	return (0);
 }
 
 int	exec_builtin(t_infos *infos, t_env *env, int i, t_all *all)
 {
+	int	code;
+
+	if (infos->instr.out < 0 && !infos->n_pipe)
+		infos->instr.out = STDOUT_FILENO;
+	code = 0;
 	if (!ft_strcmp(infos->cmd[i][0], "pwd"))
-		return (built_in_pwd());
+		code = built_in_pwd(infos);
 	else if (!ft_strcmp(infos->cmd[i][0], "cd"))
-		return (built_in_cd(infos->cmd[i], env, all));
+		code = built_in_cd(infos->cmd[i], env, all);
 	else if (!ft_strcmp(infos->cmd[i][0], "env"))
-		print_env(env);
+		print_env(env, infos);
 	else if (!ft_strcmp(infos->cmd[i][0], "export"))
-		return (export_mult(infos->cmd[i], &env, all));
+		code = export_mult(infos->cmd[i], &env, all);
 	else if (!ft_strcmp(infos->cmd[i][0], "unset"))
 		ft_unset(infos->cmd[0], &env, all);
-	else if (!ft_strcmp(infos->cmd[i][0], "echo"))
-		ft_echo(infos->cmd[i]);
+	else if (!infos->n_pipe && !ft_strcmp(infos->cmd[i][0], "echo"))
+		ft_echo(infos->cmd[i], infos);
+	else if (infos->n_pipe && !ft_strcmp(infos->cmd[i][0], "echo"))
+		ft_echo_pipe(infos->cmd[i]);
 	else if (!ft_strcmp(infos->cmd[i][0], "exit"))
-		return (ft_exit(infos, &env, i));
-	return (0);
+		code = ft_exit(infos, &env, i);
+	return (code);
 }

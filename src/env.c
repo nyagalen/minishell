@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 22:24:41 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/14 05:59:16 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/20 03:10:38 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,14 @@ t_env	*init_env(char **envp, t_all *all)
 	return (env);
 }
 
-void	print_env(t_env *env)
+void	print_env(t_env *env, t_infos *info)
 {
-	while (env)
+	while (!info->n_pipe && env)
+	{
+		ft_putendl_fd(env->line, info->instr.out);
+		env = env->next;
+	}
+	while (info->n_pipe && env)
 	{
 		printf("%s\n", env->line);
 		env = env->next;

@@ -6,7 +6,7 @@
 /*   By: svydrina <svydrina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 23:23:58 by svydrina          #+#    #+#             */
-/*   Updated: 2024/04/17 21:11:30 by svydrina         ###   ########.fr       */
+/*   Updated: 2024/04/20 03:13:10 by svydrina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,12 +229,12 @@ int		perm_denied(char *exec);
 //dans built_in.	reset_in_out(&all.info);c
 int		is_built_in(char *cmd);
 int		built_in_cd(char **cmd, t_env *env, t_all *all);
-int		built_in_pwd(void);
+int		built_in_pwd(t_infos *info);
 int		exec_builtin(t_infos *infos, t_env *env, int i, t_all *all);
 
 //dans env.c
 t_env	*init_env(char **envp, t_all *all);
-void	print_env(t_env *env);
+void	print_env(t_env *env, t_infos *info);
 void	free_env(t_env **env);
 char	*var_value(t_env *env);
 char	*value_by_name(char *name, t_env *env);
@@ -270,7 +270,8 @@ int		atoi_exitcode(t_infos *infos, char *num);
 int		exitcode(int code);
 
 //dans echo.c
-void	ft_echo(char **cmd);
+void	ft_echo(char **cmd, t_infos *info);
+void	ft_echo_pipe(char **cmd);
 
 //dans utils.c
 int		tab_size(char **tab);
